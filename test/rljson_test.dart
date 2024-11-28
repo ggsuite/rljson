@@ -8,7 +8,7 @@ import 'package:rljson/rljson.dart';
 import 'package:test/test.dart';
 
 void main() {
-  group('RlJson', () {
+  group('Rljson', () {
     final rljson = Rljson.example;
 
     group('ls()', () {
@@ -119,7 +119,8 @@ void main() {
 
           expect(
             exception.toString(),
-            'Exception: _data must be a list in layer: @layerA, @layerB',
+            'Exception: '
+            '_data must be a list in layer: @layerA, @layerB',
           );
         });
       });

@@ -11,7 +11,12 @@
   },
   "canCommit": {
     "success": {
-      "hash": 3848884875636
+      "hash": 3848414402371
+    }
+  },
+  "doCommit": {
+    "success": {
+      "hash": 3848697832458
     }
   }
 }
