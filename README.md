@@ -1,6 +1,6 @@
 # rljson
 
-rljson: Define and Manage Relational Data Structures in JSON with Ease
+rljson: Define and manage relational data structures in JSON
 
 ![rljson](https://github.com/inlavigo/rljson/raw/main/rljson.webp)
 
