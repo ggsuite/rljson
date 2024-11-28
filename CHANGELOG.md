@@ -6,6 +6,10 @@
 
 - Change headline
 
+### Fixed
+
+- Fix typo
+
 ## [1.0.3] - 2024-11-28
 
 ### Changed

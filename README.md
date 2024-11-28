@@ -155,7 +155,7 @@ Future<void> main() async {
 
 ```
 
-## Contibute
+## Contribute
 
 Contributions are welcome! To contribute:
 
