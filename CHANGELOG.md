@@ -14,6 +14,10 @@
 - Rename data into originalData and dataAsMap into data
 - Rename find into item
 
+### Fixed
+
+- Fix tests
+
 ### Removed
 
 - Remove item

@@ -536,5 +536,45 @@ void main() {
         });
       });
     });
+
+    group('hash(table, index)', () {
+      group('returns', () {
+        test('the hash of the item at the index of the table', () {
+          expect(rljson.hash(table: '@tableA', index: 0), a0Hash);
+          expect(rljson.hash(table: '@tableA', index: 1), a1Hash);
+          expect(rljson.hash(table: '@tableB', index: 0), b0Hash);
+          expect(rljson.hash(table: '@tableB', index: 1), b1Hash);
+        });
+      });
+
+      group('throws', () {
+        test('when table does not exist', () {
+          late final Exception exception;
+
+          try {
+            rljson.hash(table: '@tableC', index: 0);
+          } catch (e) {
+            exception = e as Exception;
+          }
+
+          expect(exception.toString(), 'Exception: Table "@tableC" not found.');
+        });
+
+        test('when index is out of range', () {
+          late final Exception exception;
+
+          try {
+            rljson.hash(table: '@tableA', index: 2);
+          } catch (e) {
+            exception = e as Exception;
+          }
+
+          expect(
+            exception.toString(),
+            'Exception: Index 2 out of range in table "@tableA".',
+          );
+        });
+      });
+    });
   });
 }
