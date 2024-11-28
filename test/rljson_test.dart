@@ -281,5 +281,32 @@ void main() {
         });
       });
     });
+
+    group('dataAsMap', () {
+      test('returns the data where the _data list is replaced by a map', () {
+        expect(rljson.dataAsMap, <String, dynamic>{
+          '@layerA': {
+            'KFQrf4mEz0UPmUaFHwH4T6': {
+              'keyA0': 'a0',
+              '_hash': 'KFQrf4mEz0UPmUaFHwH4T6',
+            },
+            'YPw-pxhqaUOWRFGramr4B1': {
+              'keyA1': 'a1',
+              '_hash': 'YPw-pxhqaUOWRFGramr4B1',
+            },
+          },
+          '@layerB': {
+            'nmejjLAUhygiT6WFDPPsHy': {
+              'keyB0': 'b0',
+              '_hash': 'nmejjLAUhygiT6WFDPPsHy',
+            },
+            'dXhIygNwNMVPEqFbsFJkn6': {
+              'keyB1': 'b1',
+              '_hash': 'dXhIygNwNMVPEqFbsFJkn6',
+            },
+          },
+        });
+      });
+    });
   });
 }

@@ -17,12 +17,15 @@ typedef Rlmap = Map<String, dynamic>;
 class Rljson {
   /// Creates a new json containing the given data
   factory Rljson.fromData(Rlmap data) {
-    return const Rljson._private(data: {}).addData(data);
+    return const Rljson._private(data: {}, dataAsMap: {}).addData(data);
   }
 
   // ...........................................................................
   /// The json data managed by this object
   final Rlmap data;
+
+  /// Returns a map of layers containing a map of items for fast access
+  final Rlmap dataAsMap;
 
   // ...........................................................................
   /// Creates a new json containing the given data
@@ -30,12 +33,14 @@ class Rljson {
     _checkData(data);
     _checkLayerNames(data);
     data = addHashes(data);
+    final dataAsMap = _toMap(data);
 
     if (this.data.isEmpty) {
-      return Rljson._private(data: data);
+      return Rljson._private(data: data, dataAsMap: dataAsMap);
     }
 
     final mergedData = {...this.data};
+    final mergedMap = {...dataAsMap};
 
     if (this.data.isNotEmpty) {
       for (final layer in data.keys) {
@@ -43,33 +48,40 @@ class Rljson {
           continue;
         }
 
-        // Layer does not exist yet. Insert all
         final oldLayer = this.data[layer];
         final newLayer = data[layer];
 
+        // Layer does not exist yet. Insert all
         if (oldLayer == null) {
           mergedData[layer] = newLayer;
+          mergedMap[layer] = dataAsMap[layer];
           continue;
         }
 
+        final oldMap = this.dataAsMap[layer] as Rlmap;
+
         // Layer exists. Merge data
-        final mergedLayer = [...oldLayer['_data'] as List<dynamic>];
+        final mergedLayerData = [...oldLayer['_data'] as List<dynamic>];
+        final mergedLayerMap = {...oldMap};
         final newData = newLayer['_data'] as List<dynamic>;
 
         for (final item in newData) {
-          final hash = item['_hash'];
-          final exists = mergedLayer.any((element) => element['_hash'] == hash);
+          final hash = item['_hash'] as String;
+          final exists = mergedLayerMap[hash] != null;
+
           if (!exists) {
-            mergedLayer.add(item);
+            mergedLayerData.add(item);
+            mergedLayerMap[hash] = item;
           }
         }
 
-        newLayer['_data'] = mergedLayer;
+        newLayer['_data'] = mergedLayerData;
         mergedData[layer] = newLayer;
+        mergedMap[layer] = mergedLayerMap;
       }
     }
 
-    return Rljson.fromData(mergedData);
+    return Rljson._private(data: mergedData, dataAsMap: mergedMap);
   }
 
   // ...........................................................................
@@ -237,8 +249,9 @@ class Rljson {
   // ######################
 
   /// Constructor
-  const Rljson._private({required this.data});
+  const Rljson._private({required this.data, required this.dataAsMap});
 
+  // ...........................................................................
   void _checkLayerNames(Rlmap data) {
     for (final key in data.keys) {
       if (key == '_hash') continue;
@@ -251,6 +264,7 @@ class Rljson {
     }
   }
 
+  // ...........................................................................
   void _checkData(Rlmap data) {
     final layersWithMissingData = <String>[];
     final layersWithWrongType = <String>[];
@@ -279,5 +293,28 @@ class Rljson {
         '_data must be a list in layer: ${layersWithWrongType.join(', ')}',
       );
     }
+  }
+
+  // ...........................................................................
+  Rlmap _toMap(Rlmap data) {
+    final result = Rlmap();
+
+    // Iterate all layers
+    for (final layer in data.keys) {
+      if (layer.startsWith('_')) continue;
+
+      final layerData = Rlmap();
+      result[layer] = layerData;
+
+      // Turn _data into map
+      final items = data[layer]['_data'] as List<dynamic>;
+
+      for (final item in items) {
+        final hash = item['_hash'] as String;
+        layerData[hash] = item;
+      }
+    }
+
+    return result;
   }
 }

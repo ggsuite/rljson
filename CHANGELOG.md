@@ -5,6 +5,7 @@
 ### Added
 
 - Initial boilerplate.
+- add dataAsMap
 
 ### Changed
 
