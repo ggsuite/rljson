@@ -86,7 +86,7 @@ class Rljson {
 
   // ...........................................................................
   /// Allows to query data from the json
-  List<Rlmap> find({
+  List<Rlmap> item({
     required String layer,
     required bool Function(Rlmap item) where,
   }) {

@@ -49,9 +49,9 @@ void main() {
       });
     });
 
-    group('find(layer, where)', () {
+    group('item(layer, where)', () {
       test('returns the items that match the query', () {
-        final items = rljson.find(
+        final items = rljson.item(
           layer: '@layerA',
           where: (item) => item['keyA0'] == 'a0',
         );
@@ -66,7 +66,7 @@ void main() {
           late final Exception exception;
 
           try {
-            rljson.find(
+            rljson.item(
               layer: '@layerC',
               where: (item) => item['keyA0'] == 'a0',
             );
