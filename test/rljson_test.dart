@@ -32,11 +32,11 @@ void main() {
       });
     });
 
-    group('query(layer, query)', () {
+    group('find(layer, where)', () {
       test('returns the items that match the query', () {
-        final items = rljson.query(
+        final items = rljson.find(
           layer: '@layerA',
-          query: {'keyA0': 'a0'},
+          where: (item) => item['keyA0'] == 'a0',
         );
 
         expect(items, [
@@ -49,9 +49,9 @@ void main() {
           late final Exception exception;
 
           try {
-            rljson.query(
+            rljson.find(
               layer: '@layerC',
-              query: {'keyA0': 'a0'},
+              where: (item) => item['keyA0'] == 'a0',
             );
           } catch (e) {
             exception = e as Exception;
@@ -283,28 +283,69 @@ void main() {
     });
 
     group('dataAsMap', () {
-      test('returns the data where the _data list is replaced by a map', () {
-        expect(rljson.dataAsMap, <String, dynamic>{
-          '@layerA': {
-            'KFQrf4mEz0UPmUaFHwH4T6': {
-              'keyA0': 'a0',
-              '_hash': 'KFQrf4mEz0UPmUaFHwH4T6',
+      group('returns the data where the _data list is replaced by a map', () {
+        test('with example', () {
+          expect(rljson.dataAsMap, <String, dynamic>{
+            '@layerA': {
+              'KFQrf4mEz0UPmUaFHwH4T6': {
+                'keyA0': 'a0',
+                '_hash': 'KFQrf4mEz0UPmUaFHwH4T6',
+              },
+              'YPw-pxhqaUOWRFGramr4B1': {
+                'keyA1': 'a1',
+                '_hash': 'YPw-pxhqaUOWRFGramr4B1',
+              },
             },
-            'YPw-pxhqaUOWRFGramr4B1': {
-              'keyA1': 'a1',
-              '_hash': 'YPw-pxhqaUOWRFGramr4B1',
+            '@layerB': {
+              'nmejjLAUhygiT6WFDPPsHy': {
+                'keyB0': 'b0',
+                '_hash': 'nmejjLAUhygiT6WFDPPsHy',
+              },
+              'dXhIygNwNMVPEqFbsFJkn6': {
+                'keyB1': 'b1',
+                '_hash': 'dXhIygNwNMVPEqFbsFJkn6',
+              },
             },
-          },
-          '@layerB': {
-            'nmejjLAUhygiT6WFDPPsHy': {
-              'keyB0': 'b0',
-              '_hash': 'nmejjLAUhygiT6WFDPPsHy',
+          });
+        });
+
+        test('with added data', () {
+          final rljson2 = rljson.addData({
+            '@layerC': {
+              '_data': [
+                {'keyC0': 'c0'},
+              ],
             },
-            'dXhIygNwNMVPEqFbsFJkn6': {
-              'keyB1': 'b1',
-              '_hash': 'dXhIygNwNMVPEqFbsFJkn6',
+          });
+
+          expect(rljson2.dataAsMap, {
+            '@layerA': {
+              'KFQrf4mEz0UPmUaFHwH4T6': {
+                'keyA0': 'a0',
+                '_hash': 'KFQrf4mEz0UPmUaFHwH4T6',
+              },
+              'YPw-pxhqaUOWRFGramr4B1': {
+                'keyA1': 'a1',
+                '_hash': 'YPw-pxhqaUOWRFGramr4B1',
+              },
             },
-          },
+            '@layerB': {
+              'nmejjLAUhygiT6WFDPPsHy': {
+                'keyB0': 'b0',
+                '_hash': 'nmejjLAUhygiT6WFDPPsHy',
+              },
+              'dXhIygNwNMVPEqFbsFJkn6': {
+                'keyB1': 'b1',
+                '_hash': 'dXhIygNwNMVPEqFbsFJkn6',
+              },
+            },
+            '@layerC': {
+              'afNjjrfH8-OfkkEH1uCK14': {
+                'keyC0': 'c0',
+                '_hash': 'afNjjrfH8-OfkkEH1uCK14',
+              },
+            },
+          });
         });
       });
     });

@@ -29,36 +29,36 @@ class Rljson {
 
   // ...........................................................................
   /// Creates a new json containing the given data
-  Rljson addData(Rlmap data) {
-    _checkData(data);
-    _checkLayerNames(data);
-    data = addHashes(data);
-    final dataAsMap = _toMap(data);
+  Rljson addData(Rlmap addedData) {
+    _checkData(addedData);
+    _checkLayerNames(addedData);
+    addedData = addHashes(addedData);
+    final addedDataAsMap = _toMap(addedData);
 
-    if (this.data.isEmpty) {
-      return Rljson._private(data: data, dataAsMap: dataAsMap);
+    if (data.isEmpty) {
+      return Rljson._private(data: addedData, dataAsMap: addedDataAsMap);
     }
 
-    final mergedData = {...this.data};
+    final mergedData = {...data};
     final mergedMap = {...dataAsMap};
 
-    if (this.data.isNotEmpty) {
-      for (final layer in data.keys) {
+    if (data.isNotEmpty) {
+      for (final layer in addedData.keys) {
         if (layer == '_hash') {
           continue;
         }
 
-        final oldLayer = this.data[layer];
-        final newLayer = data[layer];
+        final oldLayer = data[layer];
+        final newLayer = addedData[layer];
 
         // Layer does not exist yet. Insert all
         if (oldLayer == null) {
           mergedData[layer] = newLayer;
-          mergedMap[layer] = dataAsMap[layer];
+          mergedMap[layer] = addedDataAsMap[layer];
           continue;
         }
 
-        final oldMap = this.dataAsMap[layer] as Rlmap;
+        final oldMap = dataAsMap[layer] as Rlmap;
 
         // Layer exists. Merge data
         final mergedLayerData = [...oldLayer['_data'] as List<dynamic>];
@@ -86,24 +86,17 @@ class Rljson {
 
   // ...........................................................................
   /// Allows to query data from the json
-  dynamic query({
+  List<Rlmap> find({
     required String layer,
-    required Map<String, dynamic> query,
+    required bool Function(Rlmap item) where,
   }) {
-    final layerData = data[layer];
+    final layerData = dataAsMap[layer] as Map<String, Rlmap>?;
     if (layerData == null) {
       throw Exception('Layer not found: $layer');
     }
 
-    final items = layerData['_data'] as List<dynamic>;
-    return items.where((item) {
-      for (final key in query.keys) {
-        if (item[key] != query[key]) {
-          return false;
-        }
-      }
-      return true;
-    }).toList();
+    final items = layerData.values.where(where).toList();
+    return items;
   }
 
   // ...........................................................................
@@ -112,15 +105,12 @@ class Rljson {
     final components = path.split('/');
     final [layer, hash, value] = components;
 
-    final layerData = data[layer];
+    final layerData = dataAsMap[layer];
     if (layerData == null) {
       throw Exception('Layer not found: $layer');
     }
 
-    final itemData = layerData['_data'].firstWhere(
-      (dynamic v) => v['_hash'] == hash,
-      orElse: () => null,
-    );
+    final itemData = layerData[hash];
 
     if (itemData == null) {
       throw Exception('Item with hash "$hash" not found.');
@@ -133,14 +123,12 @@ class Rljson {
   /// Returns all pathes found in data
   List<String> ls() {
     final List<String> result = [];
-    for (final layer in data.keys) {
-      if (layer == '_hash') {
-        continue;
-      }
+    for (final layerEntry in dataAsMap.entries) {
+      final layer = layerEntry.key;
+      final layerData = layerEntry.value as Rlmap;
 
-      final layerData = data[layer];
-      final items = (layerData['_data'] as List<dynamic>).cast<Rlmap>();
-      for (final item in items) {
+      for (final itemEntry in layerData.entries) {
+        final item = itemEntry.value as Rlmap;
         final hash = item['_hash'];
         for (final key in item.keys) {
           if (key == '_hash') {
@@ -156,17 +144,17 @@ class Rljson {
   // ...........................................................................
   /// Throws if a link is not available
   void checkLinks() {
-    for (final layer in data.keys) {
-      if (layer == '_hash') continue;
+    for (final layer in dataAsMap.keys) {
+      final layerData = dataAsMap[layer] as Rlmap;
 
-      for (final item
-          in (data[layer]['_data'] as List<dynamic>).cast<Rlmap>()) {
+      for (final entry in layerData.entries) {
+        final item = entry.value as Rlmap;
         for (final key in item.keys) {
           if (key == '_hash') continue;
 
           if (key.startsWith('@')) {
             // Check if linked layer exists
-            final linkLayer = data[key];
+            final linkLayer = dataAsMap[key];
             final hash = item['_hash'];
 
             if (linkLayer == null) {
@@ -178,10 +166,7 @@ class Rljson {
 
             // Check if linked item exists
             final targetHash = item[key];
-            final linkedItem = linkLayer['_data'].firstWhere(
-              (dynamic v) => v['_hash'] == targetHash,
-              orElse: () => null,
-            );
+            final linkedItem = linkLayer[targetHash];
 
             if (linkedItem == null) {
               throw Exception(
@@ -303,7 +288,7 @@ class Rljson {
     for (final layer in data.keys) {
       if (layer.startsWith('_')) continue;
 
-      final layerData = Rlmap();
+      final layerData = <String, Rlmap>{};
       result[layer] = layerData;
 
       // Turn _data into map
@@ -311,7 +296,7 @@ class Rljson {
 
       for (final item in items) {
         final hash = item['_hash'] as String;
-        layerData[hash] = item;
+        layerData[hash] = item as Rlmap;
       }
     }
 
