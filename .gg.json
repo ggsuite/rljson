@@ -18,5 +18,15 @@
     "success": {
       "hash": 3849121897786
     }
+  },
+  "canPublish": {
+    "success": {
+      "hash": 3849121897786
+    }
+  },
+  "doPublish": {
+    "success": {
+      "hash": 3849121897786
+    }
   }
 }

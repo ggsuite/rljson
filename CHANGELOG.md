@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [1.0.0] - 2024-11-28
 
 ### Added
 
@@ -21,3 +21,5 @@
 ### Removed
 
 - Remove item
+
+[1.0.0]: https://github.com/inlavigo/rljson/tag/%tag
