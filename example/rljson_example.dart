@@ -52,7 +52,7 @@ Future<void> main() async {
   // .............................................................
   print('Add and merge additional data. The original table is not changed');
 
-  final tables1 = db.addData(
+  db = db.addData(
     {
       '@tableA': {
         '_data': [
@@ -74,7 +74,7 @@ Future<void> main() async {
 
   // .............................................................
   print('Print a list of all values in the database');
-  final allPathes = tables1.ls();
+  final allPathes = db.ls();
   print(allPathes.map((path) => '- $path').join('\n'));
 
   // .............................................................

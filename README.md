@@ -19,11 +19,10 @@ preserving the benefits of relational modeling.
 ## Features
 
 - Define independent or interconnected tables
-- Link fields across tables
-- Simply access to values
-- Effortless data access
+- Link and access fields across tables
 - Deep 128bit hashing
-- Immutability, data safety and reduced redundancy
+- Immutable state
+- No duplicates through hashes
 
 ## Example
 
@@ -75,7 +74,7 @@ Future<void> main() async {
   // .............................................................
   print('Add and merge additional data. The original table is not changed');
 
-  final tables1 = db.addData(
+  db = db.addData(
     {
       '@tableA': {
         '_data': [
@@ -97,7 +96,7 @@ Future<void> main() async {
 
   // .............................................................
   print('Print a list of all values in the database');
-  final allPathes = tables1.ls();
+  final allPathes = db.ls();
   print(allPathes.map((path) => '- $path').join('\n'));
 
   // .............................................................
