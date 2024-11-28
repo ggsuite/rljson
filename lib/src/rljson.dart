@@ -17,15 +17,15 @@ typedef Rlmap = Map<String, dynamic>;
 class Rljson {
   /// Creates a new json containing the given data
   factory Rljson.fromData(Rlmap data) {
-    return const Rljson._private(data: {}, dataAsMap: {}).addData(data);
+    return const Rljson._private(originalData: {}, data: {}).addData(data);
   }
 
   // ...........................................................................
   /// The json data managed by this object
-  final Rlmap data;
+  final Rlmap originalData;
 
   /// Returns a map of layers containing a map of items for fast access
-  final Rlmap dataAsMap;
+  final Rlmap data;
 
   // ...........................................................................
   /// Creates a new json containing the given data
@@ -35,20 +35,20 @@ class Rljson {
     addedData = addHashes(addedData);
     final addedDataAsMap = _toMap(addedData);
 
-    if (data.isEmpty) {
-      return Rljson._private(data: addedData, dataAsMap: addedDataAsMap);
+    if (originalData.isEmpty) {
+      return Rljson._private(originalData: addedData, data: addedDataAsMap);
     }
 
-    final mergedData = {...data};
-    final mergedMap = {...dataAsMap};
+    final mergedData = {...originalData};
+    final mergedMap = {...data};
 
-    if (data.isNotEmpty) {
+    if (originalData.isNotEmpty) {
       for (final layer in addedData.keys) {
         if (layer == '_hash') {
           continue;
         }
 
-        final oldLayer = data[layer];
+        final oldLayer = originalData[layer];
         final newLayer = addedData[layer];
 
         // Layer does not exist yet. Insert all
@@ -58,7 +58,7 @@ class Rljson {
           continue;
         }
 
-        final oldMap = dataAsMap[layer] as Rlmap;
+        final oldMap = data[layer] as Rlmap;
 
         // Layer exists. Merge data
         final mergedLayerData = [...oldLayer['_data'] as List<dynamic>];
@@ -81,7 +81,7 @@ class Rljson {
       }
     }
 
-    return Rljson._private(data: mergedData, dataAsMap: mergedMap);
+    return Rljson._private(originalData: mergedData, data: mergedMap);
   }
 
   // ...........................................................................
@@ -90,7 +90,7 @@ class Rljson {
     required String layer,
     required bool Function(Rlmap item) where,
   }) {
-    final layerData = dataAsMap[layer] as Map<String, Rlmap>?;
+    final layerData = data[layer] as Map<String, Rlmap>?;
     if (layerData == null) {
       throw Exception('Layer not found: $layer');
     }
@@ -103,7 +103,7 @@ class Rljson {
   /// Returns all pathes found in data
   List<String> ls() {
     final List<String> result = [];
-    for (final layerEntry in dataAsMap.entries) {
+    for (final layerEntry in data.entries) {
       final layer = layerEntry.key;
       final layerData = layerEntry.value as Rlmap;
 
@@ -124,8 +124,8 @@ class Rljson {
   // ...........................................................................
   /// Throws if a link is not available
   void checkLinks() {
-    for (final layer in dataAsMap.keys) {
-      final layerData = dataAsMap[layer] as Rlmap;
+    for (final layer in data.keys) {
+      final layerData = data[layer] as Rlmap;
 
       for (final entry in layerData.entries) {
         final item = entry.value as Rlmap;
@@ -134,7 +134,7 @@ class Rljson {
 
           if (key.startsWith('@')) {
             // Check if linked layer exists
-            final linkLayer = dataAsMap[key];
+            final linkLayer = data[key];
             final hash = item['_hash'];
 
             if (linkLayer == null) {
@@ -214,7 +214,7 @@ class Rljson {
   // ######################
 
   /// Constructor
-  const Rljson._private({required this.data, required this.dataAsMap});
+  const Rljson._private({required this.originalData, required this.data});
 
   // ...........................................................................
   void _checkLayerNames(Rlmap data) {

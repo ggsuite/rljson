@@ -10,6 +10,7 @@
 ### Changed
 
 - Rename \_data into \_list
+- Rename data into originalData and dataAsMap into data
 
 ### Removed
 

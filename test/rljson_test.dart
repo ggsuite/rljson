@@ -24,7 +24,7 @@ void main() {
 
     group('fromData(data)', () {
       test('adds hashes to all fields', () {
-        expect(rljson.dataAsMap, {
+        expect(rljson.data, {
           '@layerA': {
             'KFQrf4mEz0UPmUaFHwH4T6': {
               'keyA0': 'a0',
@@ -151,7 +151,7 @@ void main() {
           },
         });
 
-        final items = rljson2.data['@layerA']['_data'] as List<dynamic>;
+        final items = rljson2.originalData['@layerA']['_data'] as List<dynamic>;
         expect(items, [
           {'keyA0': 'a0', '_hash': 'KFQrf4mEz0UPmUaFHwH4T6'},
           {'keyA1': 'a1', '_hash': 'YPw-pxhqaUOWRFGramr4B1'},
@@ -187,7 +187,7 @@ void main() {
           },
         });
 
-        final items = rljson2.data['@layerA']['_data'] as List<dynamic>;
+        final items = rljson2.originalData['@layerA']['_data'] as List<dynamic>;
         expect(items, [
           {'keyA0': 'a0', '_hash': 'KFQrf4mEz0UPmUaFHwH4T6'},
           {'keyA1': 'a1', '_hash': 'YPw-pxhqaUOWRFGramr4B1'},
@@ -263,10 +263,10 @@ void main() {
       });
     });
 
-    group('dataAsMap', () {
+    group('data', () {
       group('returns the data where the _data list is replaced by a map', () {
         test('with example', () {
-          expect(rljson.dataAsMap, <String, dynamic>{
+          expect(rljson.data, <String, dynamic>{
             '@layerA': {
               'KFQrf4mEz0UPmUaFHwH4T6': {
                 'keyA0': 'a0',
@@ -299,7 +299,7 @@ void main() {
             },
           });
 
-          expect(rljson2.dataAsMap, {
+          expect(rljson2.data, {
             '@layerA': {
               'KFQrf4mEz0UPmUaFHwH4T6': {
                 'keyA0': 'a0',
