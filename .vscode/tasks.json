@@ -1,0 +1,26 @@
+/**
+ * @license
+ * Copyright (c) 2019 - 2023 Dr. Gabriel Gatzsche. All Rights Reserved.
+ *
+ * Use of this source code is governed by terms that can be
+ * found in the LICENSE file in the root of this package.
+ */
+
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "generate_lcov",
+      "type": "shell",
+      "command": "dart",
+      "args": ["run", "coverage:test_with_coverage", "${file}"],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "dartImport.fixOnSave": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  }
+}
