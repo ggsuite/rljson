@@ -10,3 +10,7 @@
 ### Changed
 
 - Rename \_data into \_list
+
+### Removed
+
+- Remove item

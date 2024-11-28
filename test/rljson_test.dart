@@ -24,11 +24,28 @@ void main() {
 
     group('fromData(data)', () {
       test('adds hashes to all fields', () {
-        final a0 = rljson.item('@layerA/KFQrf4mEz0UPmUaFHwH4T6/_hash');
-        final a1 = rljson.item('@layerA/YPw-pxhqaUOWRFGramr4B1/_hash');
-
-        expect(a0, 'KFQrf4mEz0UPmUaFHwH4T6');
-        expect(a1, 'YPw-pxhqaUOWRFGramr4B1');
+        expect(rljson.dataAsMap, {
+          '@layerA': {
+            'KFQrf4mEz0UPmUaFHwH4T6': {
+              'keyA0': 'a0',
+              '_hash': 'KFQrf4mEz0UPmUaFHwH4T6',
+            },
+            'YPw-pxhqaUOWRFGramr4B1': {
+              'keyA1': 'a1',
+              '_hash': 'YPw-pxhqaUOWRFGramr4B1',
+            },
+          },
+          '@layerB': {
+            'nmejjLAUhygiT6WFDPPsHy': {
+              'keyB0': 'b0',
+              '_hash': 'nmejjLAUhygiT6WFDPPsHy',
+            },
+            'dXhIygNwNMVPEqFbsFJkn6': {
+              'keyB1': 'b1',
+              '_hash': 'dXhIygNwNMVPEqFbsFJkn6',
+            },
+          },
+        });
       });
     });
 
@@ -175,42 +192,6 @@ void main() {
           {'keyA0': 'a0', '_hash': 'KFQrf4mEz0UPmUaFHwH4T6'},
           {'keyA1': 'a1', '_hash': 'YPw-pxhqaUOWRFGramr4B1'},
         ]);
-      });
-    });
-
-    group('item(path)', () {
-      test('returns the item at the path', () {
-        final item = rljson.item('@layerA/KFQrf4mEz0UPmUaFHwH4T6/keyA0');
-        expect(item, 'a0');
-      });
-
-      group('throws', () {
-        test('when layer is not found', () {
-          late final Exception exception;
-
-          try {
-            rljson.item('@layerC/KFQrf4mEz0UPmUaFHwH4T6/keyA0');
-          } catch (e) {
-            exception = e as Exception;
-          }
-
-          expect(exception.toString(), 'Exception: Layer not found: @layerC');
-        });
-
-        test('when hash is not found', () {
-          late final Exception exception;
-
-          try {
-            rljson.item('@layerA/348902384/keyA2');
-          } catch (e) {
-            exception = e as Exception;
-          }
-
-          expect(
-            exception.toString(),
-            'Exception: Item with hash "348902384" not found.',
-          );
-        });
       });
     });
 

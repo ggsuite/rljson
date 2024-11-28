@@ -100,26 +100,6 @@ class Rljson {
   }
 
   // ...........................................................................
-  /// Returns the data at a given path
-  dynamic item(String path) {
-    final components = path.split('/');
-    final [layer, hash, value] = components;
-
-    final layerData = dataAsMap[layer];
-    if (layerData == null) {
-      throw Exception('Layer not found: $layer');
-    }
-
-    final itemData = layerData[hash];
-
-    if (itemData == null) {
-      throw Exception('Item with hash "$hash" not found.');
-    }
-
-    return itemData[value];
-  }
-
-  // ...........................................................................
   /// Returns all pathes found in data
   List<String> ls() {
     final List<String> result = [];
