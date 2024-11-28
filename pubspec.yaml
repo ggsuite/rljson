@@ -1,6 +1,6 @@
 name: rljson
 description: Define and Manage Relational Data Structures in JSON with Ease
-version: 1.0.3
+version: 1.0.4
 repository: https://github.com/inlavigo/rljson.git
 
 environment:
