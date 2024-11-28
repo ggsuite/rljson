@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] - 2024-11-28
+
+### Changed
+
+- Link to github
+
 ## [1.0.0] - 2024-11-28
 
 ### Added
@@ -22,4 +28,5 @@
 
 - Remove item
 
+[1.0.1]: https://github.com/inlavigo/rljson/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/inlavigo/rljson/tag/%tag
