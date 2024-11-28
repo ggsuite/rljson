@@ -1,5 +1,5 @@
 name: rljson
-description: rljson implements a way to manage relational data in JSON.
+description: Define and Manage Relational Data Structures in JSON with Ease
 version: 1.0.0
 repository: https://github.com/inlavigo/rljson.git
 

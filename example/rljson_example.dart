@@ -1,33 +1,10 @@
-# rljson
+#!/usr/bin/env dart
+// @license
+// Copyright (c) 2019 - 2024 Dr. Gabriel Gatzsche. All Rights Reserved.
+//
+// Use of this source code is governed by terms that can be
+// found in the LICENSE file in the root of this package.
 
-rljson: Define and Manage Relational Data Structures in JSON with Ease
-
-!['rljson'](./rljson.webp)
-
-## Motivation
-
-Relational data structures are foundational for representing complex
-relationships between entities, but traditional relational databases often
-require heavy frameworks or specific query languages. By defining relational
-data structures in JSON, developers gain the flexibility to work with structured
-and interconnected data in a lightweight, human-readable format that's widely
-supported across platforms and programming environments. `rljson` simplifies
-data exchange in APIs, enhances compatibility with SQL and NoSQL databases, and
-supports use cases where lightweight data representation is crucial, all while
-preserving the benefits of relational modeling.
-
-## Features
-
-- Define independent or interconnected tables
-- Link fields across tables
-- Simply access to values
-- Effortless data access
-- Deep 128bit hashing
-- Immutability, data safety and reduced redundancy
-
-## Example
-
-```dart
 import 'package:gg_json_hash/gg_json_hash.dart' as gg_json_hash;
 import 'package:rljson/rljson.dart';
 
@@ -153,14 +130,3 @@ Future<void> main() async {
   print('Validate hashes when adding data');
   db = Rljson.fromJson(hashedData, validateHashes: true);
 }
-
-```
-
-## Contibute
-
-Contributions are welcome! To contribute:
-
-- Fork the repository on [GitHub](https://github.com/inlavigo/rljson.git).
-- Make your changes in your forked repository.
-- Submit a pull request to the main branch of this repository.
-- Thank you for helping improve this package! 😊

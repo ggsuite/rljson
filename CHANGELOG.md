@@ -6,7 +6,7 @@
 
 - Initial boilerplate.
 - add dataAsMap
-- Add functions to follow values in multiple layers
+- Add functions to follow values in multiple tables
 
 ### Changed
 

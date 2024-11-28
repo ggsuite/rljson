@@ -9,32 +9,40 @@ import 'package:gg_json_hash/gg_json_hash.dart';
 /// A simple json map
 typedef Rlmap = Map<String, dynamic>;
 
-/// A map of layers
-typedef Rllayers = Map<String, Rlmap>;
+/// A map of tables
+typedef Rltables = Map<String, Rlmap>;
 
 /// Manages a normalized JSON data structure
 ///
-/// composed of layers '@layerA', '@layerB', etc.
-/// Each layer contains an _data array, which contains data items.
+/// composed of tables '@tableA', '@tableB', etc.
+/// Each table contains an _data array, which contains data items.
 /// Each data item has an hash calculated using gg_json_hash.
 class Rljson {
   /// Creates a new json containing the given data
-  factory Rljson.fromData(Rlmap data) {
-    return const Rljson._private(originalData: {}, data: {}).addData(data);
+  factory Rljson.fromJson(Rlmap data, {bool validateHashes = false}) {
+    return const Rljson._private(originalData: {}, data: {}).addData(
+      data,
+      validateHashes: validateHashes,
+    );
   }
 
   // ...........................................................................
   /// The json data managed by this object
   final Rlmap originalData;
 
-  /// Returns a map of layers containing a map of items for fast access
-  final Rllayers data;
+  /// Returns a map of tables containing a map of items for fast access
+  final Rltables data;
 
   // ...........................................................................
   /// Creates a new json containing the given data
-  Rljson addData(Rlmap addedData) {
+  Rljson addData(Rlmap addedData, {bool validateHashes = false}) {
     _checkData(addedData);
-    _checkLayerNames(addedData);
+    _checkTableNames(addedData);
+
+    if (validateHashes) {
+      JsonHash.validate(addedData);
+    }
+
     addedData = addHashes(addedData);
     final addedDataAsMap = _toMap(addedData);
 
@@ -46,41 +54,41 @@ class Rljson {
     final mergedMap = {...data};
 
     if (originalData.isNotEmpty) {
-      for (final layer in addedData.keys) {
-        if (layer == '_hash') {
+      for (final table in addedData.keys) {
+        if (table == '_hash') {
           continue;
         }
 
-        final oldLayer = originalData[layer];
-        final newLayer = addedData[layer];
+        final oldTable = originalData[table];
+        final newTable = addedData[table];
 
-        // Layer does not exist yet. Insert all
-        if (oldLayer == null) {
-          mergedData[layer] = newLayer;
-          mergedMap[layer] = addedDataAsMap[layer]!;
+        // Table does not exist yet. Insert all
+        if (oldTable == null) {
+          mergedData[table] = newTable;
+          mergedMap[table] = addedDataAsMap[table]!;
           continue;
         }
 
-        final oldMap = data[layer] as Rlmap;
+        final oldMap = data[table] as Rlmap;
 
-        // Layer exists. Merge data
-        final mergedLayerData = [...oldLayer['_data'] as List<dynamic>];
-        final mergedLayerMap = {...oldMap};
-        final newData = newLayer['_data'] as List<dynamic>;
+        // Table exists. Merge data
+        final mergedTableData = [...oldTable['_data'] as List<dynamic>];
+        final mergedTableMap = {...oldMap};
+        final newData = newTable['_data'] as List<dynamic>;
 
         for (final item in newData) {
           final hash = item['_hash'] as String;
-          final exists = mergedLayerMap[hash] != null;
+          final exists = mergedTableMap[hash] != null;
 
           if (!exists) {
-            mergedLayerData.add(item);
-            mergedLayerMap[hash] = item;
+            mergedTableData.add(item);
+            mergedTableMap[hash] = item;
           }
         }
 
-        newLayer['_data'] = mergedLayerData;
-        mergedData[layer] = newLayer;
-        mergedMap[layer] = mergedLayerMap;
+        newTable['_data'] = mergedTableData;
+        mergedData[table] = newTable;
+        mergedMap[table] = mergedTableMap;
       }
     }
 
@@ -88,44 +96,44 @@ class Rljson {
   }
 
   // ...........................................................................
-  /// Returns the layer with the given name. Throws when name is not found.
-  Rllayers layer(String layer) {
-    final layerData = data[layer] as Rllayers?;
-    if (layerData == null) {
-      throw Exception('Layer not found: $layer');
+  /// Returns the table with the given name. Throws when name is not found.
+  Rltables table(String table) {
+    final tableData = data[table] as Rltables?;
+    if (tableData == null) {
+      throw Exception('Table not found: $table');
     }
 
-    return layerData;
+    return tableData;
   }
 
   // ...........................................................................
   /// Allows to query data from the json
   List<Rlmap> items({
-    required String layer,
+    required String table,
     required bool Function(Rlmap item) where,
   }) {
-    final layerData = this.layer(layer);
-    final items = layerData.values.where(where).toList();
+    final tableData = this.table(table);
+    final items = tableData.values.where(where).toList();
     return items;
   }
 
   // ...........................................................................
   /// Allows to query data from the json
   Rlmap item(
-    String layer,
+    String table,
     String hash,
   ) {
-    // Get layer
-    final layerData = data[layer];
-    if (layerData == null) {
-      throw Exception('Layer not found: $layer');
+    // Get table
+    final tableData = data[table];
+    if (tableData == null) {
+      throw Exception('Table not found: $table');
     }
 
     // Get item
-    final item = layerData[hash] as Rlmap?;
+    final item = tableData[hash] as Rlmap?;
     if (item == null) {
       throw Exception(
-        'Item not found with hash "$hash" in layer "$layer"',
+        'Item not found with hash "$hash" in table "$table"',
       );
     }
 
@@ -133,71 +141,93 @@ class Rljson {
   }
 
   // ...........................................................................
-  /// Queries a value from data. Throws when layer or hash is not found.
-  dynamic value({
-    required String layer,
-    required String itemHash,
-    String? key,
+  /// Queries a value from data. Throws when table or hash is not found.
+  dynamic get({
+    required String table,
+    required String item,
+    String? key1,
     String? key2,
     String? key3,
     String? key4,
   }) {
     // Get item
-    final resultItem = item(layer, itemHash);
+    final itemHash = item;
+    final resultItem = this.item(table, itemHash);
 
     // If no key is given, return the complete item
-    if (key == null) {
+    if (key1 == null) {
       return resultItem;
     }
 
     // Get item value
-    final itemValue = resultItem[key];
+    final itemValue = resultItem[key1];
     if (itemValue == null) {
       throw Exception(
-        'Key "$key" not found in item with hash "$itemHash" in layer "$layer"',
+        'Key "$key1" not found in item with hash "$itemHash" in table "$table"',
       );
     }
 
     // Return item value when no link or links are not followed
-    if (!key.startsWith('@')) {
+    if (!key1.startsWith('@')) {
       if (key2 != null) {
         throw Exception('Invalid key "$key2". '
             'Additional keys are only allowed for links. '
-            'But key "$key" points to a value.');
+            'But key "$key1" points to a value.');
       }
 
       return itemValue;
     }
 
     // Follow links
-    final targetLayer = key;
+    final targetTable = key1;
     final targetHash = itemValue as String;
 
-    return value(
-      layer: targetLayer,
-      itemHash: targetHash,
-      key: key2,
+    return get(
+      table: targetTable,
+      item: targetHash,
+      key1: key2,
       key2: key3,
       key3: key4,
     );
   }
 
   // ...........................................................................
+  /// Returns the hash of the item at the given index in the table
+  String hash({
+    required String table,
+    required int index,
+  }) {
+    final tableData = originalData[table] as Rlmap?;
+
+    if (tableData == null) {
+      throw Exception('Table "$table" not found.');
+    }
+
+    final items = tableData['_data'] as List<dynamic>;
+    if (index >= items.length) {
+      throw Exception('Index $index out of range in table "$table".');
+    }
+
+    final item = items[index] as Rlmap;
+    return item['_hash'] as String;
+  }
+
+  // ...........................................................................
   /// Returns all pathes found in data
   List<String> ls() {
     final List<String> result = [];
-    for (final layerEntry in data.entries) {
-      final layer = layerEntry.key;
-      final layerData = layerEntry.value;
+    for (final tableEntry in data.entries) {
+      final table = tableEntry.key;
+      final tableData = tableEntry.value;
 
-      for (final itemEntry in layerData.entries) {
+      for (final itemEntry in tableData.entries) {
         final item = itemEntry.value as Rlmap;
         final hash = item['_hash'];
         for (final key in item.keys) {
           if (key == '_hash') {
             continue;
           }
-          result.add('$layer/$hash/$key');
+          result.add('$table/$hash/$key');
         }
       }
     }
@@ -207,34 +237,34 @@ class Rljson {
   // ...........................................................................
   /// Throws if a link is not available
   void checkLinks() {
-    for (final layer in data.keys) {
-      final layerData = data[layer] as Rlmap;
+    for (final table in data.keys) {
+      final tableData = data[table] as Rlmap;
 
-      for (final entry in layerData.entries) {
+      for (final entry in tableData.entries) {
         final item = entry.value as Rlmap;
         for (final key in item.keys) {
           if (key == '_hash') continue;
 
           if (key.startsWith('@')) {
-            // Check if linked layer exists
-            final linkLayer = data[key];
+            // Check if linked table exists
+            final linkTable = data[key];
             final hash = item['_hash'];
 
-            if (linkLayer == null) {
+            if (linkTable == null) {
               throw Exception(
-                'Layer "$layer" has an item "$hash" which links to not '
-                'existing layer "$key".',
+                'Table "$table" has an item "$hash" which links to not '
+                'existing table "$key".',
               );
             }
 
             // Check if linked item exists
             final targetHash = item[key];
-            final linkedItem = linkLayer[targetHash];
+            final linkedItem = linkTable[targetHash];
 
             if (linkedItem == null) {
               throw Exception(
-                'Layer "$layer" has an item "$hash" which links to '
-                'not existing item "$targetHash" in layer "$key".',
+                'Table "$table" has an item "$hash" which links to '
+                'not existing item "$targetHash" in table "$key".',
               );
             }
           }
@@ -245,20 +275,18 @@ class Rljson {
 
   // ...........................................................................
   /// An example object
-  static final Rljson example = Rljson.fromData({
-    '@layerA': {
+  static final Rljson example = Rljson.fromJson({
+    '@tableA': {
       '_data': [
         {
           'keyA0': 'a0',
-          '_hash': 'KFQrf4mEz0UPmUaFHwH4T6',
         },
         {
           'keyA1': 'a1',
-          '_hash': 'YPw-pxhqaUOWRFGramr4B1',
         }
       ],
     },
-    '@layerB': {
+    '@tableB': {
       '_data': [
         {
           'keyB0': 'b0',
@@ -272,24 +300,21 @@ class Rljson {
 
   // ...........................................................................
   /// An example object
-  static final Rljson exampleWithLink = Rljson.fromData({
-    '@layerA': {
+  static final Rljson exampleWithLink = Rljson.fromJson({
+    '@tableA': {
       '_data': [
         {
-          '_hash': 'KFQrf4mEz0UPmUaFHwH4T6',
           'keyA0': 'a0',
         },
         {
-          '_hash': 'YPw-pxhqaUOWRFGramr4B1',
           'keyA1': 'a1',
         }
       ],
     },
-    '@linkToLayerA': {
+    '@linkToTableA': {
       '_data': [
         {
-          '@layerA': 'KFQrf4mEz0UPmUaFHwH4T6',
-          '_hash': 'Cr5kvgDz5NGgbnuHu-Z05N',
+          '@tableA': 'KFQrf4mEz0UPmUaFHwH4T6',
         },
       ],
     },
@@ -297,7 +322,7 @@ class Rljson {
 
   // ...........................................................................
   /// An example object
-  static final Rljson exampleWithDeepLink = Rljson.fromData({
+  static final Rljson exampleWithDeepLink = Rljson.fromJson({
     '@a': {
       '_data': [
         {
@@ -348,7 +373,7 @@ class Rljson {
   const Rljson._private({required this.originalData, required this.data});
 
   // ...........................................................................
-  void _checkLayerNames(Rlmap data) {
+  void _checkTableNames(Rlmap data) {
     for (final key in data.keys) {
       if (key == '_hash') continue;
 
@@ -356,58 +381,58 @@ class Rljson {
         continue;
       }
 
-      throw Exception('Layer name must start with @: $key');
+      throw Exception('Table name must start with @: $key');
     }
   }
 
   // ...........................................................................
   void _checkData(Rlmap data) {
-    final layersWithMissingData = <String>[];
-    final layersWithWrongType = <String>[];
+    final tablesWithMissingData = <String>[];
+    final tablesWithWrongType = <String>[];
 
-    for (final layer in data.keys) {
-      if (layer == '_hash') continue;
-      final layerData = data[layer];
-      final items = layerData['_data'];
+    for (final table in data.keys) {
+      if (table == '_hash') continue;
+      final tableData = data[table];
+      final items = tableData['_data'];
       if (items == null) {
-        layersWithMissingData.add(layer);
+        tablesWithMissingData.add(table);
       }
 
       if (items is! List<dynamic>) {
-        layersWithWrongType.add(layer);
+        tablesWithWrongType.add(table);
       }
     }
 
-    if (layersWithMissingData.isNotEmpty) {
+    if (tablesWithMissingData.isNotEmpty) {
       throw Exception(
-        '_data is missing in layer: ${layersWithMissingData.join(', ')}',
+        '_data is missing in table: ${tablesWithMissingData.join(', ')}',
       );
     }
 
-    if (layersWithWrongType.isNotEmpty) {
+    if (tablesWithWrongType.isNotEmpty) {
       throw Exception(
-        '_data must be a list in layer: ${layersWithWrongType.join(', ')}',
+        '_data must be a list in table: ${tablesWithWrongType.join(', ')}',
       );
     }
   }
 
   // ...........................................................................
-  Rllayers _toMap(Rlmap data) {
+  Rltables _toMap(Rlmap data) {
     final result = <String, Rlmap>{};
 
-    // Iterate all layers
-    for (final layer in data.keys) {
-      if (layer.startsWith('_')) continue;
+    // Iterate all tables
+    for (final table in data.keys) {
+      if (table.startsWith('_')) continue;
 
-      final layerData = <String, Rlmap>{};
-      result[layer] = layerData;
+      final tableData = <String, Rlmap>{};
+      result[table] = tableData;
 
       // Turn _data into map
-      final items = data[layer]['_data'] as List<dynamic>;
+      final items = data[table]['_data'] as List<dynamic>;
 
       for (final item in items) {
         final hash = item['_hash'] as String;
-        layerData[hash] = item as Rlmap;
+        tableData[hash] = item as Rlmap;
       }
     }
 

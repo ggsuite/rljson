@@ -24,7 +24,7 @@
         "-n",
         "aud_ab_space_widget",
         "-d",
-        "aud_ab_space_widget renders several layers of an AbSpace efficiently.",
+        "aud_ab_space_widget renders several tables of an AbSpace efficiently.",
         "--no-open-source",
         "--no-cli",
         "--flutter",
