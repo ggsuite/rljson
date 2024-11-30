@@ -33,6 +33,9 @@ class Rljson {
   /// Returns a map of tables containing a map of items for fast access
   final Rltables data;
 
+  /// Used JsonHash instance
+  final jh = JsonHash.defaultInstance;
+
   // ...........................................................................
   /// Creates a new json containing the given data
   Rljson addData(Rlmap addedData, {bool validateHashes = false}) {
@@ -40,10 +43,10 @@ class Rljson {
     _checkTableNames(addedData);
 
     if (validateHashes) {
-      JsonHash.validate(addedData);
+      jh.validate(addedData);
     }
 
-    addedData = addHashes(addedData);
+    addedData = jh.apply(addedData);
     final addedDataAsMap = _toMap(addedData);
 
     if (originalData.isEmpty) {
@@ -320,51 +323,69 @@ class Rljson {
     },
   });
 
-  // ...........................................................................
-  /// An example object
-  static final Rljson exampleWithDeepLink = Rljson.fromJson({
-    '@a': {
-      '_data': [
-        {
-          '@b': 'Ji-ftHLbqQehV4aV0FlEO6',
-          'value': 'a',
-          '_hash': 'Q-oaM7xctsuFg_faf1lkhC',
-        }
-      ],
-      '_hash': 'GnSVp1CmoAo3rPiiGl44p-',
-    },
-    '@b': {
-      '_data': [
-        {
-          '@c': 'tlmxwmwJvFMyBYIYoA2k4K',
-          'value': 'b',
-          '_hash': 'ks2Zy5nlXx91deccdZtjvK',
-        }
-      ],
-      '_hash': 'uHEtXhILctvNH6zk6k4vDi',
-    },
-    '@c': {
-      '_data': [
-        {
-          '@d': '0tlKQklLrHoIhHZxdtcbmS',
-          'value': 'c',
-          '_hash': '3AzQ8kTQ-PjmW0FwY5mirx',
-        }
-      ],
-      '_hash': 'PE0bzvER5q3D-DgxswKzQM',
-    },
-    '@d': {
-      '_data': [
-        {
-          'value': 'd',
-          '_hash': '0tlKQklLrHoIhHZxdtcbmS',
-        },
-      ],
-      '_hash': 'WNq8zriiKUM_vn9DwrwAf0',
-    },
-    '_hash': '8_qxUEjOkDIq8Um7Z8OCt6',
-  });
+  /// An example object are tables are linked a -> b -> c -> d
+  static Rljson get exampleWithDeepLink {
+    // Create an Rljson instance
+    var rljson = Rljson.fromJson({});
 
+    // Create a table d
+    rljson = rljson.addData({
+      '@d': {
+        '_data': [
+          {
+            'value': 'd',
+          },
+        ],
+      },
+    });
+
+    // Get the hash of d
+    final hashD = rljson.hash(table: '@d', index: 0);
+
+    // Create a second table c linking to d
+    rljson = rljson.addData({
+      '@c': {
+        '_data': [
+          {
+            '@d': hashD,
+            'value': 'c',
+          },
+        ],
+      },
+    });
+
+    // Get the hash of c
+    final hashC = rljson.hash(table: '@c', index: 0);
+
+    // Create a third table b linking to c
+    rljson = rljson.addData({
+      '@b': {
+        '_data': [
+          {
+            '@c': hashC,
+            'value': 'b',
+          },
+        ],
+      },
+    });
+
+    // Get the hash of b
+    final hashB = rljson.hash(table: '@b', index: 0);
+
+    // Create a first table a linking to b
+    rljson = rljson.addData({
+      '@a': {
+        '_data': [
+          {
+            '@b': hashB,
+            'value': 'a',
+          },
+        ],
+      },
+    });
+
+    return rljson;
+  }
   // ######################
   // Private
   // ######################

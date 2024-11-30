@@ -27,7 +27,7 @@ linter:
     - prefer_const_constructors_in_immutables
     - prefer_const_declarations
     - prefer_const_literals_to_create_immutables
-    - prefer_constructors_over_static_methods
+    # - prefer_constructors_over_static_methods
     - package_api_docs
     - public_member_api_docs
     - missing_whitespace_between_adjacent_strings

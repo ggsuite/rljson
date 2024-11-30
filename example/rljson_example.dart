@@ -5,7 +5,6 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-import 'package:gg_json_hash/gg_json_hash.dart' as gg_json_hash;
 import 'package:rljson/rljson.dart';
 
 Future<void> main() async {
@@ -118,7 +117,7 @@ Future<void> main() async {
 
   // .............................................................
   print('To hash data in advance use gg_json_hash');
-  final hashedData = gg_json_hash.addHashes({
+  final hashedData = db.jh.apply({
     '@tableA': {
       '_data': [
         {'a': 'a0'},

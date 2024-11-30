@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.7] - 2024-11-30
+
+### Changed
+
+- Udpate latest version of gg\_json\_hash
+
 ## [1.0.6] - 2024-11-28
 
 ### Changed
@@ -51,6 +57,7 @@
 
 - Remove item
 
+[1.0.7]: https://github.com/inlavigo/rljson/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/inlavigo/rljson/compare/1.0.3...1.0.6
 [1.0.3]: https://github.com/inlavigo/rljson/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/inlavigo/rljson/compare/1.0.1...1.0.2
