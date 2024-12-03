@@ -17,10 +17,10 @@ void main() {
 
     setUp(
       () {
-        a0Hash = rljson.hash(table: '@tableA', index: 0);
-        a1Hash = rljson.hash(table: '@tableA', index: 1);
-        b0Hash = rljson.hash(table: '@tableB', index: 0);
-        b1Hash = rljson.hash(table: '@tableB', index: 1);
+        a0Hash = rljson.hash(table: 'tableA', index: 0);
+        a1Hash = rljson.hash(table: 'tableA', index: 1);
+        b0Hash = rljson.hash(table: 'tableB', index: 0);
+        b1Hash = rljson.hash(table: 'tableB', index: 1);
 
         expect(a0Hash.length, 22);
         expect(a1Hash.length, 22);
@@ -32,10 +32,10 @@ void main() {
     group('ls()', () {
       test('lists the pathes of all items', () {
         expect(rljson.ls(), [
-          '@tableA/KFQrf4mEz0UPmUaFHwH4T6/keyA0',
-          '@tableA/YPw-pxhqaUOWRFGramr4B1/keyA1',
-          '@tableB/nmejjLAUhygiT6WFDPPsHy/keyB0',
-          '@tableB/dXhIygNwNMVPEqFbsFJkn6/keyB1',
+          'tableA/KFQrf4mEz0UPmUaFHwH4T6/keyA0',
+          'tableA/YPw-pxhqaUOWRFGramr4B1/keyA1',
+          'tableB/nmejjLAUhygiT6WFDPPsHy/keyB0',
+          'tableB/dXhIygNwNMVPEqFbsFJkn6/keyB1',
         ]);
       });
     });
@@ -43,7 +43,7 @@ void main() {
     group('fromData(data)', () {
       test('adds hashes to all fields', () {
         expect(rljson.data, {
-          '@tableA': {
+          'tableA': {
             a0Hash: {
               'keyA0': 'a0',
               '_hash': a0Hash,
@@ -53,7 +53,7 @@ void main() {
               '_hash': a1Hash,
             },
           },
-          '@tableB': {
+          'tableB': {
             b0Hash: {
               'keyB0': 'b0',
               '_hash': b0Hash,
@@ -70,7 +70,7 @@ void main() {
     group('table(String table)', () {
       group('returns', () {
         test('the table when existing', () {
-          final table = rljson.table('@tableA');
+          final table = rljson.table('tableA');
           expect(table, {
             a0Hash: {
               'keyA0': 'a0',
@@ -90,13 +90,13 @@ void main() {
 
           try {
             rljson.table(
-              '@tableC',
+              'tableC',
             );
           } catch (e) {
             exception = e as Exception;
           }
 
-          expect(exception.toString(), 'Exception: Table not found: @tableC');
+          expect(exception.toString(), 'Exception: Table not found: tableC');
         });
       });
     });
@@ -104,7 +104,7 @@ void main() {
     group('items(table, where)', () {
       test('returns the items that match the query', () {
         final items = rljson.items(
-          table: '@tableA',
+          table: 'tableA',
           where: (item) => item['keyA0'] == 'a0',
         );
 
@@ -117,7 +117,7 @@ void main() {
     group('item(table, hash)', () {
       group('returns', () {
         test('the item when existing', () {
-          final item = rljson.item('@tableA', a0Hash);
+          final item = rljson.item('tableA', a0Hash);
           expect(item, {
             'keyA0': 'a0',
             '_hash': a0Hash,
@@ -130,19 +130,19 @@ void main() {
           late final Exception exception;
 
           try {
-            rljson.item('@tableC', a0Hash);
+            rljson.item('tableC', a0Hash);
           } catch (e) {
             exception = e as Exception;
           }
 
-          expect(exception.toString(), 'Exception: Table not found: @tableC');
+          expect(exception.toString(), 'Exception: Table not found: tableC');
         });
 
         test('when hash is not available', () {
           late final Exception exception;
 
           try {
-            rljson.item('@tableA', 'nonExistingHash');
+            rljson.item('tableA', 'nonExistingHash');
           } catch (e) {
             exception = e as Exception;
           }
@@ -150,7 +150,7 @@ void main() {
           expect(
             exception.toString(),
             'Exception: Item not found with hash "nonExistingHash" '
-            'in table "@tableA"',
+            'in table "tableA"',
           );
         });
       });
@@ -161,7 +161,7 @@ void main() {
         test('the value of the key of the item with hash in table', () {
           expect(
             rljson.get(
-              table: '@tableA',
+              table: 'tableA',
               item: a0Hash,
               key1: 'keyA0',
             ),
@@ -171,7 +171,7 @@ void main() {
 
         test('the complete item, when no key is given', () {
           expect(
-            rljson.get(table: '@tableA', item: a0Hash),
+            rljson.get(table: 'tableA', item: a0Hash),
             {'keyA0': 'a0', '_hash': a0Hash},
           );
         });
@@ -179,13 +179,13 @@ void main() {
         test('the linked value, when property is a link', () {
           final rljson = Rljson.exampleWithLink;
 
-          final tableALinkHash = rljson.hash(table: '@linkToTableA', index: 0);
+          final tableALinkHash = rljson.hash(table: 'linkToTableA', index: 0);
 
           expect(
             rljson.get(
-              table: '@linkToTableA',
+              table: 'linkToTableA',
               item: tableALinkHash,
-              key1: '@tableA',
+              key1: 'tableARef',
             ),
             {'_hash': a0Hash, 'keyA0': 'a0'},
           );
@@ -193,16 +193,17 @@ void main() {
 
         test('the linked value accross multiple tables using key2 to key4', () {
           final rljson = Rljson.exampleWithDeepLink;
+          final hash = (rljson.data['a'] as Map<String, dynamic>).keys.first;
           // print(const JsonEncoder.withIndent(' ')
           // .convert(rljson.originalData));
           // return;
           expect(
             rljson.get(
-              table: '@a',
-              item: 'GnSVp1CmoAo3rPiiGl44p-',
-              key1: '@b',
-              key2: '@c',
-              key3: '@d',
+              table: 'a',
+              item: hash,
+              key1: 'bRef',
+              key2: 'cRef',
+              key3: 'dRef',
               key4: 'value',
             ),
             'd',
@@ -216,7 +217,7 @@ void main() {
 
           try {
             rljson.get(
-              table: '@tableA',
+              table: 'tableA',
               item: a0Hash,
               key1: 'nonExistingKey',
             );
@@ -227,7 +228,7 @@ void main() {
           expect(
             exception.toString(),
             'Exception: Key "nonExistingKey" not found in item with hash '
-            '"KFQrf4mEz0UPmUaFHwH4T6" in table "@tableA"',
+            '"KFQrf4mEz0UPmUaFHwH4T6" in table "tableA"',
           );
         });
 
@@ -236,7 +237,7 @@ void main() {
 
           try {
             rljson.get(
-              table: '@tableA',
+              table: 'tableA',
               item: a0Hash,
               key1: 'keyA0',
               key2: 'keyA1',
@@ -263,7 +264,7 @@ void main() {
           try {
             rljson.addData(
               {
-                '@tableA': {
+                'tableA': {
                   '_data': [
                     {'keyA0': 'a0'},
                   ],
@@ -280,32 +281,14 @@ void main() {
             'Exception: Hash is missing.',
           );
         });
-        test('when table names do not start with @', () {
-          late final Exception exception;
-
-          try {
-            rljson.addData({
-              'tableA': {'_data': <dynamic>[]},
-              'tableB': {'_data': <dynamic>[]},
-              'tableC': {'_data': <dynamic>[]},
-            });
-          } catch (e) {
-            exception = e as Exception;
-          }
-
-          expect(
-            exception.toString(),
-            'Exception: Table name must start with @: tableA',
-          );
-        });
 
         test('when tables do not contain a _data object', () {
           late final Exception exception;
 
           try {
             rljson.addData({
-              '@tableA': <String, dynamic>{},
-              '@tableB': <String, dynamic>{},
+              'tableA': <String, dynamic>{},
+              'tableB': <String, dynamic>{},
             });
           } catch (e) {
             exception = e as Exception;
@@ -313,7 +296,7 @@ void main() {
 
           expect(
             exception.toString(),
-            'Exception: _data is missing in table: @tableA, @tableB',
+            'Exception: _data is missing in table: tableA, tableB',
           );
         });
 
@@ -322,10 +305,10 @@ void main() {
 
           try {
             rljson.addData({
-              '@tableA': <String, dynamic>{
+              'tableA': <String, dynamic>{
                 '_data': <dynamic>{},
               },
-              '@tableB': <String, dynamic>{
+              'tableB': <String, dynamic>{
                 '_data': <dynamic>{},
               },
             });
@@ -336,21 +319,21 @@ void main() {
           expect(
             exception.toString(),
             'Exception: '
-            '_data must be a list in table: @tableA, @tableB',
+            '_data must be a list in table: tableA, tableB',
           );
         });
       });
 
       test('adds data to the json', () {
         final rljson2 = rljson.addData({
-          '@tableA': {
+          'tableA': {
             '_data': [
               {'keyA2': 'a2'},
             ],
           },
         });
 
-        final items = rljson2.originalData['@tableA']['_data'] as List<dynamic>;
+        final items = rljson2.originalData['tableA']['_data'] as List<dynamic>;
         expect(items, [
           {'keyA0': 'a0', '_hash': a0Hash},
           {'keyA1': 'a1', '_hash': a1Hash},
@@ -360,7 +343,7 @@ void main() {
 
       test('replaces data when the added table is not yet existing', () {
         final rljson2 = rljson.addData({
-          '@tableC': {
+          'tableC': {
             '_data': [
               {'keyC0': 'c0'},
             ],
@@ -369,24 +352,24 @@ void main() {
 
         final items = rljson2.ls();
         expect(items, [
-          '@tableA/KFQrf4mEz0UPmUaFHwH4T6/keyA0',
-          '@tableA/YPw-pxhqaUOWRFGramr4B1/keyA1',
-          '@tableB/nmejjLAUhygiT6WFDPPsHy/keyB0',
-          '@tableB/dXhIygNwNMVPEqFbsFJkn6/keyB1',
-          '@tableC/afNjjrfH8-OfkkEH1uCK14/keyC0',
+          'tableA/KFQrf4mEz0UPmUaFHwH4T6/keyA0',
+          'tableA/YPw-pxhqaUOWRFGramr4B1/keyA1',
+          'tableB/nmejjLAUhygiT6WFDPPsHy/keyB0',
+          'tableB/dXhIygNwNMVPEqFbsFJkn6/keyB1',
+          'tableC/afNjjrfH8-OfkkEH1uCK14/keyC0',
         ]);
       });
 
       test('does not cause duplicates', () {
         final rljson2 = rljson.addData({
-          '@tableA': {
+          'tableA': {
             '_data': [
               {'keyA1': 'a1'},
             ],
           },
         });
 
-        final items = rljson2.originalData['@tableA']['_data'] as List<dynamic>;
+        final items = rljson2.originalData['tableA']['_data'] as List<dynamic>;
         expect(items, [
           {'keyA0': 'a0', '_hash': a0Hash},
           {'keyA1': 'a1', '_hash': a1Hash},
@@ -406,16 +389,16 @@ void main() {
 
           // Add an item with an link to a non-existing table
           final jsonWithBrokenLink = rljson.addData({
-            '@tableA': {
+            'tableA': {
               '_data': [
                 {
-                  '@nonExistingTable': 'a2',
+                  'nonExistingTableRef': 'a2',
                 },
               ],
             },
           });
 
-          final a0Hash = jsonWithBrokenLink.hash(table: '@tableA', index: 2);
+          final a0Hash = jsonWithBrokenLink.hash(table: 'tableA', index: 2);
 
           late final String message;
 
@@ -427,8 +410,8 @@ void main() {
 
           expect(
             message,
-            'Exception: Table "@tableA" has an item "$a0Hash" '
-            'which links to not existing table "@nonExistingTable".',
+            'Exception: Table "tableA" has an item "$a0Hash" '
+            'which links to not existing table "nonExistingTable".',
           );
         });
 
@@ -437,17 +420,17 @@ void main() {
 
           // Add an item with an link to a non-existing table
           final jsonWithBrokenLink = rljson.addData({
-            '@linkToTableA': {
+            'linkToTableA': {
               '_data': [
                 {
-                  '@tableA': 'brokenHash',
+                  'tableARef': 'brokenHash',
                 },
               ],
             },
           });
 
           final linkToTableAHash = jsonWithBrokenLink.hash(
-            table: '@linkToTableA',
+            table: 'linkToTableA',
             index: 1,
           );
 
@@ -461,9 +444,9 @@ void main() {
 
           expect(
             message,
-            'Exception: Table "@linkToTableA" has an item '
+            'Exception: Table "linkToTableA" has an item '
             '"$linkToTableAHash" which links to not existing '
-            'item "brokenHash" in table "@tableA".',
+            'item "brokenHash" in table "tableA".',
           );
         });
       });
@@ -473,7 +456,7 @@ void main() {
       group('returns the data where the _data list is replaced by a map', () {
         test('with example', () {
           expect(rljson.data, <String, dynamic>{
-            '@tableA': {
+            'tableA': {
               a0Hash: {
                 'keyA0': 'a0',
                 '_hash': a0Hash,
@@ -483,7 +466,7 @@ void main() {
                 '_hash': a1Hash,
               },
             },
-            '@tableB': {
+            'tableB': {
               b0Hash: {
                 'keyB0': 'b0',
                 '_hash': b0Hash,
@@ -498,7 +481,7 @@ void main() {
 
         test('with added data', () {
           final rljson2 = rljson.addData({
-            '@tableC': {
+            'tableC': {
               '_data': [
                 {'keyC0': 'c0'},
               ],
@@ -506,7 +489,7 @@ void main() {
           });
 
           expect(rljson2.data, {
-            '@tableA': {
+            'tableA': {
               a0Hash: {
                 'keyA0': 'a0',
                 '_hash': a0Hash,
@@ -516,7 +499,7 @@ void main() {
                 '_hash': a1Hash,
               },
             },
-            '@tableB': {
+            'tableB': {
               b0Hash: {
                 'keyB0': 'b0',
                 '_hash': b0Hash,
@@ -526,7 +509,7 @@ void main() {
                 '_hash': b1Hash,
               },
             },
-            '@tableC': {
+            'tableC': {
               'afNjjrfH8-OfkkEH1uCK14': {
                 'keyC0': 'c0',
                 '_hash': 'afNjjrfH8-OfkkEH1uCK14',
@@ -540,10 +523,10 @@ void main() {
     group('hash(table, index)', () {
       group('returns', () {
         test('the hash of the item at the index of the table', () {
-          expect(rljson.hash(table: '@tableA', index: 0), a0Hash);
-          expect(rljson.hash(table: '@tableA', index: 1), a1Hash);
-          expect(rljson.hash(table: '@tableB', index: 0), b0Hash);
-          expect(rljson.hash(table: '@tableB', index: 1), b1Hash);
+          expect(rljson.hash(table: 'tableA', index: 0), a0Hash);
+          expect(rljson.hash(table: 'tableA', index: 1), a1Hash);
+          expect(rljson.hash(table: 'tableB', index: 0), b0Hash);
+          expect(rljson.hash(table: 'tableB', index: 1), b1Hash);
         });
       });
 
@@ -552,28 +535,86 @@ void main() {
           late final Exception exception;
 
           try {
-            rljson.hash(table: '@tableC', index: 0);
+            rljson.hash(table: 'tableC', index: 0);
           } catch (e) {
             exception = e as Exception;
           }
 
-          expect(exception.toString(), 'Exception: Table "@tableC" not found.');
+          expect(exception.toString(), 'Exception: Table "tableC" not found.');
         });
 
         test('when index is out of range', () {
           late final Exception exception;
 
           try {
-            rljson.hash(table: '@tableA', index: 2);
+            rljson.hash(table: 'tableA', index: 2);
           } catch (e) {
             exception = e as Exception;
           }
 
           expect(
             exception.toString(),
-            'Exception: Index 2 out of range in table "@tableA".',
+            'Exception: Index 2 out of range in table "tableA".',
           );
         });
+      });
+    });
+
+    group('checkTableNames(data)', () {
+      test(
+          'throws when table names contain other chars then letters '
+          'and numbers', () {
+        late final String exception;
+
+        try {
+          Rljson.checkTableNames({
+            'tableA/': <String, dynamic>{},
+          });
+        } catch (e) {
+          exception = e.toString();
+        }
+
+        expect(
+          exception.toString(),
+          'Exception: Invalid table name: tableA/. Only letters and numbers '
+          'are allowed.',
+        );
+      });
+
+      test('throws when table names end with Ref', () {
+        late final String exception;
+
+        try {
+          Rljson.checkTableNames({
+            'tableARef': <String, dynamic>{},
+          });
+        } catch (e) {
+          exception = e.toString();
+        }
+
+        expect(
+          exception.toString(),
+          'Exception: Invalid table name: tableARef. Table names must not end '
+          'with "Ref".',
+        );
+      });
+
+      test('throws when table names start with numbers', () {
+        late final String exception;
+
+        try {
+          Rljson.checkTableNames({
+            '5tableA': <String, dynamic>{},
+          });
+        } catch (e) {
+          exception = e.toString();
+        }
+
+        expect(
+          exception.toString(),
+          'Exception: Invalid table name: 5tableA. Table names must not start '
+          'with a number.',
+        );
       });
     });
   });

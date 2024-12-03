@@ -14,7 +14,7 @@ typedef Rltables = Map<String, Rlmap>;
 
 /// Manages a normalized JSON data structure
 ///
-/// composed of tables '@tableA', '@tableB', etc.
+/// composed of tables 'tableA', 'tableB', etc.
 /// Each table contains an _data array, which contains data items.
 /// Each data item has an hash calculated using gg_json_hash.
 class Rljson {
@@ -40,7 +40,7 @@ class Rljson {
   /// Creates a new json containing the given data
   Rljson addData(Rlmap addedData, {bool validateHashes = false}) {
     _checkData(addedData);
-    _checkTableNames(addedData);
+    checkTableNames(addedData);
 
     if (validateHashes) {
       jh.validate(addedData);
@@ -171,18 +171,19 @@ class Rljson {
     }
 
     // Return item value when no link or links are not followed
-    if (!key1.startsWith('@')) {
+    if (!key1.endsWith('Ref')) {
       if (key2 != null) {
-        throw Exception('Invalid key "$key2". '
-            'Additional keys are only allowed for links. '
-            'But key "$key1" points to a value.');
+        throw Exception(
+          'Invalid key "$key2". Additional keys are only allowed for links. '
+          'But key "$key1" points to a value.',
+        );
       }
 
       return itemValue;
     }
 
     // Follow links
-    final targetTable = key1;
+    final targetTable = key1.substring(0, key1.length - 3);
     final targetHash = itemValue as String;
 
     return get(
@@ -248,15 +249,16 @@ class Rljson {
         for (final key in item.keys) {
           if (key == '_hash') continue;
 
-          if (key.startsWith('@')) {
+          if (key.endsWith('Ref')) {
+            final tableName = key.substring(0, key.length - 3);
             // Check if linked table exists
-            final linkTable = data[key];
+            final linkTable = data[tableName];
             final hash = item['_hash'];
 
             if (linkTable == null) {
               throw Exception(
                 'Table "$table" has an item "$hash" which links to not '
-                'existing table "$key".',
+                'existing table "$tableName".',
               );
             }
 
@@ -267,7 +269,7 @@ class Rljson {
             if (linkedItem == null) {
               throw Exception(
                 'Table "$table" has an item "$hash" which links to '
-                'not existing item "$targetHash" in table "$key".',
+                'not existing item "$targetHash" in table "$tableName".',
               );
             }
           }
@@ -279,7 +281,7 @@ class Rljson {
   // ...........................................................................
   /// An example object
   static final Rljson example = Rljson.fromJson({
-    '@tableA': {
+    'tableA': {
       '_data': [
         {
           'keyA0': 'a0',
@@ -289,7 +291,7 @@ class Rljson {
         }
       ],
     },
-    '@tableB': {
+    'tableB': {
       '_data': [
         {
           'keyB0': 'b0',
@@ -304,7 +306,7 @@ class Rljson {
   // ...........................................................................
   /// An example object
   static final Rljson exampleWithLink = Rljson.fromJson({
-    '@tableA': {
+    'tableA': {
       '_data': [
         {
           'keyA0': 'a0',
@@ -314,10 +316,10 @@ class Rljson {
         }
       ],
     },
-    '@linkToTableA': {
+    'linkToTableA': {
       '_data': [
         {
-          '@tableA': 'KFQrf4mEz0UPmUaFHwH4T6',
+          'tableARef': 'KFQrf4mEz0UPmUaFHwH4T6',
         },
       ],
     },
@@ -330,7 +332,7 @@ class Rljson {
 
     // Create a table d
     rljson = rljson.addData({
-      '@d': {
+      'd': {
         '_data': [
           {
             'value': 'd',
@@ -340,14 +342,14 @@ class Rljson {
     });
 
     // Get the hash of d
-    final hashD = rljson.hash(table: '@d', index: 0);
+    final hashD = rljson.hash(table: 'd', index: 0);
 
     // Create a second table c linking to d
     rljson = rljson.addData({
-      '@c': {
+      'c': {
         '_data': [
           {
-            '@d': hashD,
+            'dRef': hashD,
             'value': 'c',
           },
         ],
@@ -355,14 +357,14 @@ class Rljson {
     });
 
     // Get the hash of c
-    final hashC = rljson.hash(table: '@c', index: 0);
+    final hashC = rljson.hash(table: 'c', index: 0);
 
     // Create a third table b linking to c
     rljson = rljson.addData({
-      '@b': {
+      'b': {
         '_data': [
           {
-            '@c': hashC,
+            'cRef': hashC,
             'value': 'b',
           },
         ],
@@ -370,14 +372,14 @@ class Rljson {
     });
 
     // Get the hash of b
-    final hashB = rljson.hash(table: '@b', index: 0);
+    final hashB = rljson.hash(table: 'b', index: 0);
 
     // Create a first table a linking to b
     rljson = rljson.addData({
-      '@a': {
+      'a': {
         '_data': [
           {
-            '@b': hashB,
+            'bRef': hashB,
             'value': 'a',
           },
         ],
@@ -386,25 +388,47 @@ class Rljson {
 
     return rljson;
   }
+
+  // ...........................................................................
+  /// Checks if table names in data are valid
+  static void checkTableNames(Rlmap data) {
+    for (final key in data.keys) {
+      if (key == '_hash') continue;
+      checkTableName(key);
+    }
+  }
+
+  // ...........................................................................
+  /// Checks if a string is valid table name
+  static void checkTableName(String str) {
+    // Table name must only contain letters and numbers.
+    if (!RegExp(r'^[a-zA-Z0-9]+$').hasMatch(str)) {
+      throw Exception(
+        'Invalid table name: $str. Only letters and numbers are allowed.',
+      );
+    }
+
+    // Table names must not end with Ref
+    if (str.endsWith('Ref')) {
+      throw Exception(
+        'Invalid table name: $str. Table names must not end with "Ref".',
+      );
+    }
+
+    // Table names must not start with a number
+    if (RegExp(r'^[0-9]').hasMatch(str)) {
+      throw Exception(
+        'Invalid table name: $str. Table names must not start with a number.',
+      );
+    }
+  }
+
   // ######################
   // Private
   // ######################
 
   /// Constructor
   const Rljson._private({required this.originalData, required this.data});
-
-  // ...........................................................................
-  void _checkTableNames(Rlmap data) {
-    for (final key in data.keys) {
-      if (key == '_hash') continue;
-
-      if (key.startsWith('@')) {
-        continue;
-      }
-
-      throw Exception('Table name must start with @: $key');
-    }
-  }
 
   // ...........................................................................
   void _checkData(Rlmap data) {

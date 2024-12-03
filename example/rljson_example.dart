@@ -12,13 +12,13 @@ Future<void> main() async {
   print('Create tables');
 
   var db = Rljson.fromJson({
-    '@tableA': {
+    'tableA': {
       '_data': [
         {'a': 'a0'},
         {'a': 'a1'},
       ],
     },
-    '@tableB': {
+    'tableB': {
       '_data': [
         {'b': 'b0'},
         {'b': 'b1'},
@@ -29,23 +29,23 @@ Future<void> main() async {
   // .............................................................
   print('Each item in the table gets an content based hash code');
 
-  final hashA0 = db.hash(table: '@tableA', index: 0);
-  final hashA1 = db.hash(table: '@tableA', index: 1);
-  final hashB0 = db.hash(table: '@tableB', index: 0);
-  final hashB1 = db.hash(table: '@tableB', index: 1);
+  final hashA0 = db.hash(table: 'tableA', index: 0);
+  final hashA1 = db.hash(table: 'tableA', index: 1);
+  final hashB0 = db.hash(table: 'tableB', index: 0);
+  final hashB1 = db.hash(table: 'tableB', index: 1);
 
   // .............................................................
   print('The hashcode can be used to access data');
-  final a0 = db.get(table: '@tableA', item: hashA0, key1: 'a');
+  final a0 = db.get(table: 'tableA', item: hashA0, key1: 'a');
   print(a0); // a0
 
-  final a1 = db.get(table: '@tableA', item: hashA1, key1: 'a');
+  final a1 = db.get(table: 'tableA', item: hashA1, key1: 'a');
   print(a1); // a1
 
-  final b0 = db.get(table: '@tableB', item: hashB0, key1: 'b');
+  final b0 = db.get(table: 'tableB', item: hashB0, key1: 'b');
   print(b0); // b0
 
-  final b1 = db.get(table: '@tableB', item: hashB1, key1: 'b');
+  final b1 = db.get(table: 'tableB', item: hashB1, key1: 'b');
   print(b1); // b1
 
   // .............................................................
@@ -53,17 +53,17 @@ Future<void> main() async {
 
   db = db.addData(
     {
-      '@tableA': {
+      'tableA': {
         '_data': [
           {'a': 'a2'},
         ],
       },
-      '@tableB': {
+      'tableB': {
         '_data': [
           {'b': 'b2'},
         ],
       },
-      '@tableC': {
+      'tableC': {
         '_data': [
           {'c': 'c0'},
         ],
@@ -80,7 +80,7 @@ Future<void> main() async {
   print('Create interconnected tables');
 
   db = Rljson.fromJson({
-    '@a': {
+    'a': {
       '_data': [
         {
           'value': 'a',
@@ -89,27 +89,27 @@ Future<void> main() async {
     },
   });
 
-  final tableAValueHash = db.hash(table: '@a', index: 0);
+  final tableAValueHash = db.hash(table: 'a', index: 0);
 
   db = db.addData({
-    '@b': {
+    'b': {
       '_data': [
         {
-          '@a': tableAValueHash,
+          'aRef': tableAValueHash,
         }
       ],
     },
   });
 
-  final tableBValueHash = db.hash(table: '@b', index: 0);
+  final tableBValueHash = db.hash(table: 'b', index: 0);
 
   // .............................................................
   print('Join tables when reading values');
 
   final a = db.get(
-    table: '@b',
+    table: 'b',
     item: tableBValueHash,
-    key1: '@a',
+    key1: 'aRef',
     key2: 'value',
   );
 
@@ -118,7 +118,7 @@ Future<void> main() async {
   // .............................................................
   print('To hash data in advance use gg_json_hash');
   final hashedData = db.jh.apply({
-    '@tableA': {
+    'tableA': {
       '_data': [
         {'a': 'a0'},
         {'a': 'a1'},

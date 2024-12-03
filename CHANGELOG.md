@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- Breaking change: Replace @ by Ref prefix
+
 ## [1.0.7] - 2024-11-30
 
 ### Changed
@@ -57,6 +63,7 @@
 
 - Remove item
 
+[Unreleased]: https://github.com/inlavigo/rljson/compare/1.0.7...HEAD
 [1.0.7]: https://github.com/inlavigo/rljson/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/inlavigo/rljson/compare/1.0.3...1.0.6
 [1.0.3]: https://github.com/inlavigo/rljson/compare/1.0.2...1.0.3
