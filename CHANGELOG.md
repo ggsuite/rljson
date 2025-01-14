@@ -1,10 +1,11 @@
 # Changelog
 
-## [Unreleased]
+## [3.0.1] - 2025-01-14
 
 ### Changed
 
 - Breaking change: Replace @ by Ref prefix
+- Update gg\_json\_hash to fix an hash bug
 
 ## [1.0.7] - 2024-11-30
 
@@ -63,7 +64,7 @@
 
 - Remove item
 
-[Unreleased]: https://github.com/inlavigo/rljson/compare/1.0.7...HEAD
+[3.0.1]: https://github.com/inlavigo/rljson/compare/1.0.7...3.0.1
 [1.0.7]: https://github.com/inlavigo/rljson/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/inlavigo/rljson/compare/1.0.3...1.0.6
 [1.0.3]: https://github.com/inlavigo/rljson/compare/1.0.2...1.0.3
