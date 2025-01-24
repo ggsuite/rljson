@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.0.2] - 2025-01-24
+
+### Changed
+
+- Update gg\_json\_hash
+
 ## [3.0.1] - 2025-01-14
 
 ### Changed
@@ -64,6 +70,7 @@
 
 - Remove item
 
+[3.0.2]: https://github.com/inlavigo/rljson/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/inlavigo/rljson/compare/1.0.7...3.0.1
 [1.0.7]: https://github.com/inlavigo/rljson/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/inlavigo/rljson/compare/1.0.3...1.0.6
