@@ -15,19 +15,17 @@ void main() {
     late String b0Hash;
     late String b1Hash;
 
-    setUp(
-      () {
-        a0Hash = rljson.hash(table: 'tableA', index: 0);
-        a1Hash = rljson.hash(table: 'tableA', index: 1);
-        b0Hash = rljson.hash(table: 'tableB', index: 0);
-        b1Hash = rljson.hash(table: 'tableB', index: 1);
+    setUp(() {
+      a0Hash = rljson.hash(table: 'tableA', index: 0);
+      a1Hash = rljson.hash(table: 'tableA', index: 1);
+      b0Hash = rljson.hash(table: 'tableB', index: 0);
+      b1Hash = rljson.hash(table: 'tableB', index: 1);
 
-        expect(a0Hash.length, 22);
-        expect(a1Hash.length, 22);
-        expect(b0Hash.length, 22);
-        expect(b1Hash.length, 22);
-      },
-    );
+      expect(a0Hash.length, 22);
+      expect(a1Hash.length, 22);
+      expect(b0Hash.length, 22);
+      expect(b1Hash.length, 22);
+    });
 
     group('ls()', () {
       test('lists the pathes of all items', () {
@@ -44,24 +42,12 @@ void main() {
       test('adds hashes to all fields', () {
         expect(rljson.data, {
           'tableA': {
-            a0Hash: {
-              'keyA0': 'a0',
-              '_hash': a0Hash,
-            },
-            a1Hash: {
-              'keyA1': 'a1',
-              '_hash': a1Hash,
-            },
+            a0Hash: {'keyA0': 'a0', '_hash': a0Hash},
+            a1Hash: {'keyA1': 'a1', '_hash': a1Hash},
           },
           'tableB': {
-            b0Hash: {
-              'keyB0': 'b0',
-              '_hash': b0Hash,
-            },
-            b1Hash: {
-              'keyB1': 'b1',
-              '_hash': b1Hash,
-            },
+            b0Hash: {'keyB0': 'b0', '_hash': b0Hash},
+            b1Hash: {'keyB1': 'b1', '_hash': b1Hash},
           },
         });
       });
@@ -72,14 +58,8 @@ void main() {
         test('the table when existing', () {
           final table = rljson.table('tableA');
           expect(table, {
-            a0Hash: {
-              'keyA0': 'a0',
-              '_hash': a0Hash,
-            },
-            a1Hash: {
-              'keyA1': 'a1',
-              '_hash': a1Hash,
-            },
+            a0Hash: {'keyA0': 'a0', '_hash': a0Hash},
+            a1Hash: {'keyA1': 'a1', '_hash': a1Hash},
           });
         });
       });
@@ -89,9 +69,7 @@ void main() {
           late final Exception exception;
 
           try {
-            rljson.table(
-              'tableC',
-            );
+            rljson.table('tableC');
           } catch (e) {
             exception = e as Exception;
           }
@@ -118,10 +96,7 @@ void main() {
       group('returns', () {
         test('the item when existing', () {
           final item = rljson.item('tableA', a0Hash);
-          expect(item, {
-            'keyA0': 'a0',
-            '_hash': a0Hash,
-          });
+          expect(item, {'keyA0': 'a0', '_hash': a0Hash});
         });
       });
 
@@ -160,20 +135,16 @@ void main() {
       group('returns', () {
         test('the value of the key of the item with hash in table', () {
           expect(
-            rljson.get(
-              table: 'tableA',
-              item: a0Hash,
-              key1: 'keyA0',
-            ),
+            rljson.get(table: 'tableA', item: a0Hash, key1: 'keyA0'),
             'a0',
           );
         });
 
         test('the complete item, when no key is given', () {
-          expect(
-            rljson.get(table: 'tableA', item: a0Hash),
-            {'keyA0': 'a0', '_hash': a0Hash},
-          );
+          expect(rljson.get(table: 'tableA', item: a0Hash), {
+            'keyA0': 'a0',
+            '_hash': a0Hash,
+          });
         });
 
         test('the linked value, when property is a link', () {
@@ -216,11 +187,7 @@ void main() {
           late final Exception exception;
 
           try {
-            rljson.get(
-              table: 'tableA',
-              item: a0Hash,
-              key1: 'nonExistingKey',
-            );
+            rljson.get(table: 'tableA', item: a0Hash, key1: 'nonExistingKey');
           } catch (e) {
             exception = e as Exception;
           }
@@ -262,24 +229,18 @@ void main() {
           late final Exception exception;
 
           try {
-            rljson.addData(
-              {
-                'tableA': {
-                  '_data': [
-                    {'keyA0': 'a0'},
-                  ],
-                },
+            rljson.addData({
+              'tableA': {
+                '_data': [
+                  {'keyA0': 'a0'},
+                ],
               },
-              validateHashes: true,
-            );
+            }, validateHashes: true);
           } catch (e) {
             exception = e as Exception;
           }
 
-          expect(
-            exception.toString(),
-            'Exception: Hash is missing.',
-          );
+          expect(exception.toString(), 'Exception: Hash is missing.');
         });
 
         test('when tables do not contain a _data object', () {
@@ -305,12 +266,8 @@ void main() {
 
           try {
             rljson.addData({
-              'tableA': <String, dynamic>{
-                '_data': <dynamic>{},
-              },
-              'tableB': <String, dynamic>{
-                '_data': <dynamic>{},
-              },
+              'tableA': <String, dynamic>{'_data': <dynamic>{}},
+              'tableB': <String, dynamic>{'_data': <dynamic>{}},
             });
           } catch (e) {
             exception = e as Exception;
@@ -391,9 +348,7 @@ void main() {
           final jsonWithBrokenLink = rljson.addData({
             'tableA': {
               '_data': [
-                {
-                  'nonExistingTableRef': 'a2',
-                },
+                {'nonExistingTableRef': 'a2'},
               ],
             },
           });
@@ -422,9 +377,7 @@ void main() {
           final jsonWithBrokenLink = rljson.addData({
             'linkToTableA': {
               '_data': [
-                {
-                  'tableARef': 'brokenHash',
-                },
+                {'tableARef': 'brokenHash'},
               ],
             },
           });
@@ -457,24 +410,12 @@ void main() {
         test('with example', () {
           expect(rljson.data, <String, dynamic>{
             'tableA': {
-              a0Hash: {
-                'keyA0': 'a0',
-                '_hash': a0Hash,
-              },
-              a1Hash: {
-                'keyA1': 'a1',
-                '_hash': a1Hash,
-              },
+              a0Hash: {'keyA0': 'a0', '_hash': a0Hash},
+              a1Hash: {'keyA1': 'a1', '_hash': a1Hash},
             },
             'tableB': {
-              b0Hash: {
-                'keyB0': 'b0',
-                '_hash': b0Hash,
-              },
-              b1Hash: {
-                'keyB1': 'b1',
-                '_hash': b1Hash,
-              },
+              b0Hash: {'keyB0': 'b0', '_hash': b0Hash},
+              b1Hash: {'keyB1': 'b1', '_hash': b1Hash},
             },
           });
         });
@@ -490,24 +431,12 @@ void main() {
 
           expect(rljson2.data, {
             'tableA': {
-              a0Hash: {
-                'keyA0': 'a0',
-                '_hash': a0Hash,
-              },
-              a1Hash: {
-                'keyA1': 'a1',
-                '_hash': a1Hash,
-              },
+              a0Hash: {'keyA0': 'a0', '_hash': a0Hash},
+              a1Hash: {'keyA1': 'a1', '_hash': a1Hash},
             },
             'tableB': {
-              b0Hash: {
-                'keyB0': 'b0',
-                '_hash': b0Hash,
-              },
-              b1Hash: {
-                'keyB1': 'b1',
-                '_hash': b1Hash,
-              },
+              b0Hash: {'keyB0': 'b0', '_hash': b0Hash},
+              b1Hash: {'keyB1': 'b1', '_hash': b1Hash},
             },
             'tableC': {
               'afNjjrfH8-OfkkEH1uCK14': {
@@ -561,15 +490,12 @@ void main() {
     });
 
     group('checkTableNames(data)', () {
-      test(
-          'throws when table names contain other chars then letters '
+      test('throws when table names contain other chars then letters '
           'and numbers', () {
         late final String exception;
 
         try {
-          Rljson.checkTableNames({
-            'tableA/': <String, dynamic>{},
-          });
+          Rljson.checkTableNames({'tableA/': <String, dynamic>{}});
         } catch (e) {
           exception = e.toString();
         }
@@ -585,9 +511,7 @@ void main() {
         late final String exception;
 
         try {
-          Rljson.checkTableNames({
-            'tableARef': <String, dynamic>{},
-          });
+          Rljson.checkTableNames({'tableARef': <String, dynamic>{}});
         } catch (e) {
           exception = e.toString();
         }
@@ -603,9 +527,7 @@ void main() {
         late final String exception;
 
         try {
-          Rljson.checkTableNames({
-            '5tableA': <String, dynamic>{},
-          });
+          Rljson.checkTableNames({'5tableA': <String, dynamic>{}});
         } catch (e) {
           exception = e.toString();
         }

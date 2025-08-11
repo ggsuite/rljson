@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Add .gitattributes file
+
 ## [3.0.2] - 2025-01-24
 
 ### Changed
@@ -70,6 +76,7 @@
 
 - Remove item
 
+[Unreleased]: https://github.com/inlavigo/rljson/compare/3.0.2...HEAD
 [3.0.2]: https://github.com/inlavigo/rljson/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/inlavigo/rljson/compare/1.0.7...3.0.1
 [1.0.7]: https://github.com/inlavigo/rljson/compare/1.0.6...1.0.7

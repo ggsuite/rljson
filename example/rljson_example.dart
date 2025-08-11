@@ -51,25 +51,23 @@ Future<void> main() async {
   // .............................................................
   print('Add and merge additional data. The original table is not changed');
 
-  db = db.addData(
-    {
-      'tableA': {
-        '_data': [
-          {'a': 'a2'},
-        ],
-      },
-      'tableB': {
-        '_data': [
-          {'b': 'b2'},
-        ],
-      },
-      'tableC': {
-        '_data': [
-          {'c': 'c0'},
-        ],
-      },
+  db = db.addData({
+    'tableA': {
+      '_data': [
+        {'a': 'a2'},
+      ],
     },
-  );
+    'tableB': {
+      '_data': [
+        {'b': 'b2'},
+      ],
+    },
+    'tableC': {
+      '_data': [
+        {'c': 'c0'},
+      ],
+    },
+  });
 
   // .............................................................
   print('Print a list of all values in the database');
@@ -82,9 +80,7 @@ Future<void> main() async {
   db = Rljson.fromJson({
     'a': {
       '_data': [
-        {
-          'value': 'a',
-        }
+        {'value': 'a'},
       ],
     },
   });
@@ -94,9 +90,7 @@ Future<void> main() async {
   db = db.addData({
     'b': {
       '_data': [
-        {
-          'aRef': tableAValueHash,
-        }
+        {'aRef': tableAValueHash},
       ],
     },
   });

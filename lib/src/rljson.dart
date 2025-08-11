@@ -20,10 +20,10 @@ typedef Rltables = Map<String, Rlmap>;
 class Rljson {
   /// Creates a new json containing the given data
   factory Rljson.fromJson(Rlmap data, {bool validateHashes = false}) {
-    return const Rljson._private(originalData: {}, data: {}).addData(
-      data,
-      validateHashes: validateHashes,
-    );
+    return const Rljson._private(
+      originalData: {},
+      data: {},
+    ).addData(data, validateHashes: validateHashes);
   }
 
   // ...........................................................................
@@ -122,10 +122,7 @@ class Rljson {
 
   // ...........................................................................
   /// Allows to query data from the json
-  Rlmap item(
-    String table,
-    String hash,
-  ) {
+  Rlmap item(String table, String hash) {
     // Get table
     final tableData = data[table];
     if (tableData == null) {
@@ -135,9 +132,7 @@ class Rljson {
     // Get item
     final item = tableData[hash] as Rlmap?;
     if (item == null) {
-      throw Exception(
-        'Item not found with hash "$hash" in table "$table"',
-      );
+      throw Exception('Item not found with hash "$hash" in table "$table"');
     }
 
     return item;
@@ -197,10 +192,7 @@ class Rljson {
 
   // ...........................................................................
   /// Returns the hash of the item at the given index in the table
-  String hash({
-    required String table,
-    required int index,
-  }) {
+  String hash({required String table, required int index}) {
     final tableData = originalData[table] as Rlmap?;
 
     if (tableData == null) {
@@ -283,22 +275,14 @@ class Rljson {
   static final Rljson example = Rljson.fromJson({
     'tableA': {
       '_data': [
-        {
-          'keyA0': 'a0',
-        },
-        {
-          'keyA1': 'a1',
-        }
+        {'keyA0': 'a0'},
+        {'keyA1': 'a1'},
       ],
     },
     'tableB': {
       '_data': [
-        {
-          'keyB0': 'b0',
-        },
-        {
-          'keyB1': 'b1',
-        }
+        {'keyB0': 'b0'},
+        {'keyB1': 'b1'},
       ],
     },
   });
@@ -308,19 +292,13 @@ class Rljson {
   static final Rljson exampleWithLink = Rljson.fromJson({
     'tableA': {
       '_data': [
-        {
-          'keyA0': 'a0',
-        },
-        {
-          'keyA1': 'a1',
-        }
+        {'keyA0': 'a0'},
+        {'keyA1': 'a1'},
       ],
     },
     'linkToTableA': {
       '_data': [
-        {
-          'tableARef': 'KFQrf4mEz0UPmUaFHwH4T6',
-        },
+        {'tableARef': 'KFQrf4mEz0UPmUaFHwH4T6'},
       ],
     },
   });
@@ -334,9 +312,7 @@ class Rljson {
     rljson = rljson.addData({
       'd': {
         '_data': [
-          {
-            'value': 'd',
-          },
+          {'value': 'd'},
         ],
       },
     });
@@ -348,10 +324,7 @@ class Rljson {
     rljson = rljson.addData({
       'c': {
         '_data': [
-          {
-            'dRef': hashD,
-            'value': 'c',
-          },
+          {'dRef': hashD, 'value': 'c'},
         ],
       },
     });
@@ -363,10 +336,7 @@ class Rljson {
     rljson = rljson.addData({
       'b': {
         '_data': [
-          {
-            'cRef': hashC,
-            'value': 'b',
-          },
+          {'cRef': hashC, 'value': 'b'},
         ],
       },
     });
@@ -378,10 +348,7 @@ class Rljson {
     rljson = rljson.addData({
       'a': {
         '_data': [
-          {
-            'bRef': hashB,
-            'value': 'a',
-          },
+          {'bRef': hashB, 'value': 'a'},
         ],
       },
     });
