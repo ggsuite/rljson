@@ -1,2 +1,5 @@
 * text=auto eol=lf
 .gg.json merge=ours
+.gg/gg.json merge=ours
+CHANGELOG.md merge=union
+pubspec.lock merge=ours
