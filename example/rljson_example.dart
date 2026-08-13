@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+
 // @license
 // Copyright (c) ggsuite
 //
