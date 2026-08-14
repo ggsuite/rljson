@@ -101,10 +101,10 @@ packages:
     dependency: "direct main"
     description:
       name: gg_json_hash
-      sha256: "51fee02832f238598707fab96dbde9df7d8586044e835be15ec969c5078e0c6a"
+      sha256: "439d6d02c401aa120f45459e8f60fa0f16fc20255b33f1830e960c31e267c150"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.2.0"
   glob:
     dependency: transitive
     description:

@@ -7,7 +7,7 @@ environment:
   sdk: ">=3.13.0 <4.0.0"
 
 dependencies:
-  gg_json_hash: ^5.1.0
+  gg_json_hash: ^5.2.0
 
 dev_dependencies:
   lints: ^6.1.0
