@@ -100,10 +100,9 @@ packages:
   gg_json_hash:
     dependency: "direct main"
     description:
-      name: gg_json_hash
-      sha256: "439d6d02c401aa120f45459e8f60fa0f16fc20255b33f1830e960c31e267c150"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../gg_json_hash"
+      relative: true
+    source: path
     version: "5.2.0"
   glob:
     dependency: transitive
