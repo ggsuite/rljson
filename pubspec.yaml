@@ -1,14 +1,16 @@
 name: rljson
 description: Define and manage relational data structures in JSON with ease
-version: 3.1.0
+version: 3.2.0
 repository: https://github.com/inlavigo/rljson.git
 
 environment:
   sdk: ">=3.13.0 <4.0.0"
 
 dependencies:
-  gg_json_hash: ^5.2.0
+  gg_json_hash: ^5.3.0
 
 dev_dependencies:
+  dna_ggsuite: ^0.2.0
+  helix: ^1.3.0
   lints: ^6.1.0
   test: ^1.31.2

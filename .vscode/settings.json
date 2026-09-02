@@ -1,7 +1,348 @@
 {
-  "dartImport.fixOnSave": true,
-  "editor.formatOnSave": true,
+  // ##############
+  // Vscode Editor
+  // ##############
+
+  "files.exclude": {
+    "**/.idea": true,
+    "**/.symlinks": true,
+    "**/build": true,
+    "**/node_modules": true
+  },
+
+  // The DNA configuration is JSONC — gg_dna parses it with comments and
+  // trailing commas. Without this, VS Code validates it as strict JSON
+  // and marks every comment as an error.
+  "files.associations": {
+    "**/dna/_dna.json": "jsonc"
+  },
+
+  "editor.tabSize": 2,
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.fixAll": "always",
+    "source.organizeImports": "always"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // ##############
+  // Prettier extension
+  // ##############
+  // Pin prettier-vscode to the workspace's prettier install and config so it
+  // does not silently fall back to the bundled prettier with default options
+  // (which would emit double quotes in YAML even though .prettierrc sets
+  // singleQuote: true).
+  "prettier.requireConfig": true,
+  "prettier.useEditorConfig": false,
+  "prettier.resolveGlobalModules": false,
+  "prettier.documentSelectors": [
+    "**/*.{yaml,yml}",
+    "**/*.{json,jsonc,json5}",
+    "**/*.md",
+    "**/*.{html,css,scss}"
+  ],
+
+  // Prevent the Red Hat YAML extension from claiming the YAML formatter.
+  "yaml.format.enable": false,
+  "editor.rulers": [80],
+  "editor.wordWrapColumn": 80,
+  "editor.formatOnType": true,
+  "editor.detectIndentation": false,
+  "editor.renderWhitespace": "none",
+  "files.trimTrailingWhitespace": true,
+
+  "files.autoGuessEncoding": true,
+  "files.insertFinalNewline": true,
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+  "editor.smoothScrolling": true,
+
+  "editor.rename.enablePreview": false,
+  "editor.formatOnPaste": true,
+  "editor.unicodeHighlight.nonBasicASCII": false,
+  "editor.largeFileOptimizations": false,
+  "workbench.editor.enablePreview": false,
+
+  // ##############
+  // Git Editor
+  // ##############
+
+  "diffEditor.ignoreTrimWhitespace": false,
+
+  // ##############
+  // Explorer
+  // ##############
+
+  "explorer.confirmDelete": true,
+  "explorer.confirmDragAndDrop": false,
+
+  // ##############
+  // Problems Tab
+  // ##############
+
+  "problems.autoReveal": false,
+
+  // ##############
+  // Debug Tab
+  // ##############
+
+  "debug.console.collapseIdenticalLines": false,
+  "debug.inlineValues": "on",
+
+  // #############
+  // Testing
+  // #############
+
+  "testing.defaultGutterClickAction": "debug",
+  "testing.automaticallyOpenPeekView": "never",
+  "testing.automaticallyOpenTestResults": "neverOpen",
+
+  // #############
+  // Code Coverage
+  // #############
+
+  "coverage-gutters.showGutterCoverage": false,
+  "testing.coverageToolbarEnabled": true,
+  "testing.coverageBarThresholds": {
+    "red": 0,
+    "yellow": 99,
+    "green": 100
+  },
+  "coverage-gutters.coverageBaseDir": "coverage/**",
+  "coverage-gutters.showLineCoverage": true,
+  "coverage-gutters.showRulerCoverage": true,
+
+  // #############
+  // Search
+  // #############
+
+  "search.exclude": {
+    "**/.idea": true,
+    "**/.symlinks": true,
+    "**/*.o": true,
+    "**/*.symlinks": true,
+    "**/node_modules": true
+  },
+
+  "search.useReplacePreview": false,
+
+  // #############
+  // HTML
+  // #############
+
+  "html.format.wrapLineLength": 80,
+  "html.format.enable": true,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // #############
+  // Markdown
+  // #############
+
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "markdownlint.run": "onSave",
+  "markdown.extension.toc.omittedFromToc": {
+    "README.md": ["## Content"]
+  },
+  "markdown.extension.toc.levels": "2..3",
+
+  // #############
+  // SVG
+  // #############
+
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg"
+  },
+  "svg.preview.mode": "svg",
+
+  // #############
+  // XML
+  // #############
+
+  "[xml]": {
+    "editor.defaultFormatter": "DotJoshJohnson.xml"
+  },
+
+  // ###########
+  // Git
+  // ###########
+
+  "git.ignoreLimitWarning": true,
+  "git.autoRepositoryDetection": false,
+  "git.enableSmartCommit": true,
+  "git.autofetch": true,
+  "gitlens.blame.highlight.locations": ["gutter", "overview"],
+  "git.openRepositoryInParentFolders": "never",
+  "git.confirmSync": false,
+
+  // ###########
+  // Security
+  // ###########
+
+  "security.workspace.trust.untrustedFiles": "open",
+
+  // ###########
+  // CodeLens
+  // ###########
+
+  "references.preferredLocation": "view",
+
+  // #############
+  // PSI Header
+  // #############
+
+  "psi-header.variables": [["author", "ggsuite"]],
+
+  "psi-header.templates": [
+    {
+      "language": "*",
+      "template": []
+    },
+    {
+      "language": "xml",
+      "template": [
+        "@license",
+        "Copyright (c) ggsuite",
+        "",
+        "Use of this source code is governed by terms that can be",
+        "found in the LICENSE file in the root of this package."
+      ]
+    },
+    {
+      "language": "html",
+      "template": [
+        "@license",
+        "Copyright (c) ggsuite",
+        "",
+        "Use of this source code is governed by terms that can be",
+        "found in the LICENSE file in the root of this package."
+      ]
+    },
+    {
+      "language": "typescript",
+      "template": [
+        "@license",
+        "Copyright (c) ggsuite",
+        "",
+        "Use of this source code is governed by terms that can be",
+        "found in the LICENSE file in the root of this package."
+      ]
+    },
+    {
+      "language": "javascript",
+      "template": [
+        "@license",
+        "Copyright (c) ggsuite",
+        "",
+        "Use of this source code is governed by terms that can be",
+        "found in the LICENSE file in the root of this package."
+      ]
+    },
+    {
+      "language": "scss",
+      "template": [
+        "@license",
+        "Copyright (c) ggsuite",
+        "",
+        "Use of this source code is governed by terms that can be",
+        "found in the LICENSE file in the root of this package."
+      ]
+    },
+    {
+      "language": "dart",
+      "template": [
+        "@license",
+        "Copyright (c) ggsuite",
+        "",
+        "Use of this source code is governed by terms that can be",
+        "found in the LICENSE file in the root of this package."
+      ]
+    }
+  ],
+
+  "psi-header.lang-config": [
+    {
+      "language": "json",
+      "begin": "",
+      "prefix": "",
+      "suffix": "",
+      "end": "",
+      "lineLength": 80,
+      "beforeHeader": [],
+      "afterHeader": []
+    },
+    {
+      "language": "xml",
+      "begin": "<!--",
+      "prefix": "  ",
+      "suffix": "",
+      "lineLength": 80,
+      "end": " -->",
+      "forceToTop": true,
+      "blankLinesAfter": 1,
+      "beforeHeader": [],
+      "afterHeader": []
+    },
+    {
+      "language": "html",
+      "begin": "<!--",
+      "end": "-->"
+    },
+    {
+      "language": "typescript",
+      "prefix": "// ",
+      "begin": "",
+      "end": ""
+    },
+    {
+      "language": "scss",
+      "prefix": "// ",
+      "begin": "",
+      "end": ""
+    },
+    {
+      "language": "markdown",
+      "prefix": "",
+      "begin": "<!--",
+      "end": "-->"
+    },
+    {
+      "language": "md",
+      "prefix": "",
+      "begin": "<!--",
+      "end": "-->"
+    },
+    {
+      "language": "dart",
+      "prefix": "// ",
+      "begin": "",
+      "end": ""
+    }
+  ],
+
+  "psi-header.changes-tracking": {
+    "isActive": false,
+    "autoHeader": "autoSave",
+    "enforceHeader": false
+  },
+  "psi-header.config": {
+    "forceToTop": true
   }
 }

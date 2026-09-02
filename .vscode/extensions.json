@@ -1,8 +1,17 @@
 {
   "recommendations": [
-    "stephanvs.dot",
-    "tintinweb.graphviz-interactive-preview",
-    "geeklearningio.graphviz-markdown-preview",
-    "bmlsolutions.dotuml"
+    "bierner.markdown-mermaid",
+    "brunnerh.insert-unicode",
+    "clemenspeters.format-json",
+    "davidanson.vscode-markdownlint",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "hediet.vscode-drawio",
+    "nopeslide.vscode-drawio-plugin-mermaid",
+    "psioniq.psi-header",
+    "yzhang.markdown-all-in-one",
+    "ryanluker.vscode-coverage-gutters",
+    "jock.svg",
+    "luanpotter.dart-import"
   ]
 }
