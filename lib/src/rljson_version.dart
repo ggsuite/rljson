@@ -9,4 +9,4 @@
 // coverage:ignore-file
 
 /// The version of the `rljson` package.
-const String rljsonVersion = '3.1.0';
+const String rljsonVersion = '3.2.0';
