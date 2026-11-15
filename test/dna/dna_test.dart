@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 void main() {
   test(
     'generated dna files are unchanged',
-    () => checkDna(),
+    checkDna,
     timeout: const Timeout(Duration(minutes: 2)),
   );
 }
