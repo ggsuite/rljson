@@ -11,13 +11,14 @@ found in the LICENSE file in the root of this package.
 What holds in every language we write. The rules that only make sense in
 one of them live next door: [Dart](./code-guide-dart.md),
 [TypeScript](./code-guide-typescript.md). For tests see the
-[Test Guide](./test-guide.md).
+[Test Guide](./test-guide.md), for how a repo is cut into parts the
+[Architecture Guide](./architecture-guide.md).
 
 ## Lay out the package
 
-- Name the package after the repo, and prefix its types with the same
-  name
-- Keep one top level concept per package
+- Name the package after the repo
+- For how the package is cut into concepts, see the
+  [Architecture Guide](./architecture-guide.md) under `@boundaries`
 - Expose the package through a single entry point that re-exports and
   holds no implementation of its own
 - Name a file after the main type it holds
@@ -55,6 +56,33 @@ setters.
   explicitly — never swallow them
 - Await every asynchronous call, or mark deliberately that you do not
 
+## Give every class an example
+
+- Offer an `example` constructor that builds a valid instance without a
+  single argument
+- Make each of its parameters optional, so a caller overrides only the
+  values that matter to them
+- Fill everything else with realistic values, not with empty strings and
+  zeros
+- Use the example in tests, docs and other examples instead of building
+  the object by hand
+- Leave it out only where nothing can be instantiated: abstract types,
+  enums and purely static helpers
+
+## Keep real identifiers out of examples
+
+- Write `com.example.<app>` wherever an example, test or doc needs a
+  bundle ID, application ID or package name
+- Write `example.com`, `example.org` or `example.net` for domains, URLs
+  and mail addresses such as `user@example.com` — they are reserved for
+  documentation (RFC 2606, RFC 6761)
+- Write `192.0.2.x`, `198.51.100.x`, `203.0.113.x` or `2001:db8::` for IP
+  addresses (RFC 5737, RFC 3849)
+- Never take an identifier of the organization, such as
+  `com.<organization>.<app>` or the domain of the organization — an
+  example must neither collide with a real app nor look like one
+- Keep real identifiers in the configuration of the real app only
+
 ## Separate sections with comment landmarks
 
 - A `#####` rule before a class, enum or other top level construct
@@ -86,10 +114,12 @@ Keep the style as it is — do not invent variants.
   second one
 - Duplicated imports, test setups and copied constants are the same
   problem in small
+- The same concept in two modules is the same problem in large, see the
+  [Architecture Guide](./architecture-guide.md)
 
 ## Name things consistently
 
-- Types in PascalCase, carrying the package prefix
+- Types in PascalCase
 - Private members marked the way the language marks them
 - Constants and enum values in lowerCamelCase
 - A test file named after the file it covers

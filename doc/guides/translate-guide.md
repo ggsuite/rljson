@@ -22,7 +22,9 @@ found in the LICENSE file in the root of this package.
 ## Blog posts
 
 - Start a post in the language of the prompt
-- Put english posts into `blog/2026`, german ones into `blog/de/2026`
+- Put english posts into `doc/blog/<yyyy>`, german ones into
+  `doc/de/blog/<yyyy>`; a project management repo keeps them in its
+  quarter folder: `doc/<yyyy>-Q<n>/blog` and `doc/de/<yyyy>-Q<n>/blog`
 - Copy `doc/templates/blog-template-de.md` for a german post
 - Keep the file name in english kebab case in both languages
-- Follow the [Blog Guide](doc/guides/blog-guide.md) for everything else
+- Follow the [Blog Guide](./blog-guide.md) for everything else
