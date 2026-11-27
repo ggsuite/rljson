@@ -10,7 +10,7 @@ dependencies:
   gg_json_hash: ^5.3.0
 
 dev_dependencies:
-  dna_ggsuite: ^2.0.0
+  dna_ggsuite: ^3.0.0
   helix: ^1.15.2
   lints: ^6.1.0
   test: ^1.33.0
